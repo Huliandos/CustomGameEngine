@@ -3,23 +3,25 @@ package graphics;
 import static org.lwjgl.opengl.GL11.*;
 //import org.lwjgl.stb.STBImage;
 
-abstract class Tile extends GameObject {
+class Tile extends GameObject {
 	
-	private float x, y, width, height;
+	private float width, height;
 	
-	public Tile(float x, float y, float width, float height) {
-		this.offsetX = x;
-		this.offsetY = y;
+	public Tile(float posX, float posY, float width, float height) {
+		this.posX = posX;
+		this.posY = posY;
 		this.width = width;
 		this.height = height;
 	}
-	
-	public static void DrawQuad(float x, float y, float width, float height) {
+
+	@Override
+	public void drawGraphic() {
 		glBegin(GL_QUADS);
-		glVertex2f(x, y);
-		glVertex2f(x + width, y);
-		glVertex2f(x + width, y + height);
-		glVertex2f(x, y + height);
+			glColor4f(.8f,.8f,.8f,0);
+			glVertex2f(posX - width/2 - offsetX, posY + height/2 - offsetY);
+			glVertex2f(posX + width/2 - offsetX, posY + height/2 - offsetY);
+			glVertex2f(posX + width/2 - offsetX, posY - height/2 - offsetY);
+			glVertex2f(posX - width/2 - offsetX, posY - height/2 - offsetY);
 		glEnd();
 	}
 	

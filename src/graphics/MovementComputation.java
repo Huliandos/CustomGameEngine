@@ -23,15 +23,17 @@ public class MovementComputation implements Runnable{
 		this.window = window;
 		this.TOKEN = TOKEN;
 		
-		player = new Player(-.8f, -.8f);
+		player = new Player(0, 0);
 		dynamicGameObjects.add(player);
 		
+		/*
 		MovingBlock movB = new MovingBlock(0, 0);
 		dynamicGameObjects.add(movB);
 		movB = new MovingBlock(.3f, .4f);
 		dynamicGameObjects.add(movB);
 		movB = new MovingBlock(.7f, -.2f);
 		dynamicGameObjects.add(movB);
+		*/
 	}
 	
 	@Override
@@ -55,7 +57,7 @@ public class MovementComputation implements Runnable{
 	
 	void manageInputs() {
 		if(glfwGetMouseButton(window, 0) == GL_TRUE)	//0 = left click, 1 = right click, 2 = middle mouse button
-			System.out.println("click");
+			System.out.println("click");	//use this to shoot later
 		
 		float x = 0, y = 0;
 		
@@ -99,6 +101,9 @@ public class MovementComputation implements Runnable{
 				
 				go.move(x, y);
 			}
+		}
+		for(GameObject go : staticGameObjects) {
+			go.setOffset(offsetX, offsetY);
 		}
 	}
 }

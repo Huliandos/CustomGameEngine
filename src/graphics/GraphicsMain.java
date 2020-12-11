@@ -21,9 +21,16 @@ public class GraphicsMain {
 	static ArrayList<GameObject> staticGameObjects;	//level
 	
 	public static void main(String[] args) {
+		
 		movingGameObjects = new ArrayList<GameObject>();
 		staticGameObjects = new ArrayList<GameObject>();
 		
+		for(int y=0; y<8; y++) {
+			for(int x=0; x<8; x++) {
+				Tile tile = new Tile(x*.51f, y*.51f, .5f, .5f);
+				staticGameObjects.add(tile);
+			}
+		}
 		
 		//lwjgl screen setup
 		if(!glfwInit()) throw new IllegalStateException("failed to initialize glfw");
@@ -85,16 +92,16 @@ public class GraphicsMain {
 			
 			if(screenUpdated) {
 				synchronized(TOKEN) {
-					TOKEN.notify();	//syncs up position change with frame rated
+					TOKEN.notify();	//syncs up position change with frame rate
 				}
 				
 				glClear(GL_COLOR_BUFFER_BIT);
 				
-				for (GameObject go : movingGameObjects) {
+				for (GameObject go : staticGameObjects) {
 					go.drawGraphic();
 				}
-				
-				for (GameObject go : staticGameObjects) {
+
+				for (GameObject go : movingGameObjects) {
 					go.drawGraphic();
 				}
 				
