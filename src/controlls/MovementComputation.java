@@ -58,8 +58,8 @@ public class MovementComputation implements Runnable{
 	}
 	
 	void manageInputs() {
-		if(glfwGetMouseButton(window, 0) == GL_TRUE)	//0 = left click, 1 = right click, 2 = middle mouse button
-			System.out.println("click");	//use this to shoot later
+		//if(glfwGetMouseButton(window, 0) == GL_TRUE)	//0 = left click, 1 = right click, 2 = middle mouse button
+			//System.out.println("click");	//use this to shoot later
 		
 		float x = 0, y = 0;
 		float moveSpeed = player.getMovementSpeed();

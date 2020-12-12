@@ -15,8 +15,8 @@ import gameObjects.Tile;
 
 public class MainThread {
 	
-	//Networking params
-	static Object TOKEN;
+	//Multi threading params
+	static Object FPS_SYNC_TOKEN;
 	
 	//Graphics params
 	static int screenWidth = 800; //640
@@ -27,7 +27,6 @@ public class MainThread {
 	//Object movement computation
 	static MovementComputation moveComp;
 	static Thread moveCompThread;
-	
 	
 	//Object collections
 	static ArrayList<GameObject> dynamicGameObjects;	//players and Zombies
@@ -93,8 +92,8 @@ public class MainThread {
 	
 	static void initMovementComputation(){
 		//Initialize Thread for Input Control and Object moving
-		TOKEN = new Object();
-		moveComp = new MovementComputation(dynamicGameObjects, staticGameObjects, window, TOKEN);
+		FPS_SYNC_TOKEN = new Object();
+		moveComp = new MovementComputation(dynamicGameObjects, staticGameObjects, window, FPS_SYNC_TOKEN);
 		moveCompThread = new Thread(moveComp);
 		moveCompThread.start();
 		
@@ -130,14 +129,14 @@ public class MainThread {
 				glfwPollEvents();
 				if(frameTime >= 1) {
 					frameTime = 0;
-					System.out.println("FPS: " + frames);
+					//System.out.println("FPS: " + frames);
 					frames = 0;
 				}
 			}
 			
 			if(screenUpdated) {
-				synchronized(TOKEN) {
-					TOKEN.notify();	//syncs up position change with frame rate
+				synchronized(FPS_SYNC_TOKEN) {
+					FPS_SYNC_TOKEN.notify();	//syncs up position change with frame rate
 				}
 					
 				glClear(GL_COLOR_BUFFER_BIT);
