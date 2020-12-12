@@ -9,8 +9,8 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 public class GraphicsMain {
-	static int screenWidth = 640;
-	static int screenHeight = 480;
+	static int screenWidth = 800; //640
+	static int screenHeight = 800; //480
 	
 	static float x;
 	
