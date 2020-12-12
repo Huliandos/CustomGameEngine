@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
+import controlls.MovementComputation;
 import gameObjects.GameObject;
+import gameObjects.Player;
 import gameObjects.Tile;
 
 public class MainThread {
@@ -28,12 +30,16 @@ public class MainThread {
 	
 	
 	//Object collections
-	static ArrayList<GameObject> movingGameObjects;	//players and Zombies
+	static ArrayList<GameObject> dynamicGameObjects;	//players and Zombies
 	static ArrayList<GameObject> staticGameObjects;	//level
 	
 	public static void main(String[] args) {
 		
+		initNetworking();
+		
 		initGraphics();
+		
+		initObjects();
 		
 		initMovementComputation();
 		
@@ -46,7 +52,7 @@ public class MainThread {
 	}
 
 	static void initGraphics() {
-		movingGameObjects = new ArrayList<GameObject>();
+		dynamicGameObjects = new ArrayList<GameObject>();
 		staticGameObjects = new ArrayList<GameObject>();
 		
 		//static objects
@@ -77,10 +83,18 @@ public class MainThread {
 		GL.createCapabilities();
 	}
 	
+	static void initObjects() {
+		//loop through num of connected players within network
+		
+		//placeholder
+		Player player = new Player(0, 0);
+		dynamicGameObjects.add(player);
+	}
+	
 	static void initMovementComputation(){
 		//Initialize Thread for Input Control and Object moving
 		TOKEN = new Object();
-		moveComp = new MovementComputation(movingGameObjects, staticGameObjects, window, TOKEN);
+		moveComp = new MovementComputation(dynamicGameObjects, staticGameObjects, window, TOKEN);
 		moveCompThread = new Thread(moveComp);
 		moveCompThread.start();
 		
@@ -132,7 +146,7 @@ public class MainThread {
 						go.drawGraphic();
 					}
 
-					for (GameObject go : movingGameObjects) {
+					for (GameObject go : dynamicGameObjects) {
 						go.drawGraphic();
 					}
 					

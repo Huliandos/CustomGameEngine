@@ -1,4 +1,4 @@
-package graphics;
+package controlls;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
@@ -26,8 +26,7 @@ public class MovementComputation implements Runnable{
 		this.window = window;
 		this.TOKEN = TOKEN;
 		
-		player = new Player(0, 0);
-		dynamicGameObjects.add(player);
+		player = (Player) dynamicGameObjects.get(0);
 		
 		/*
 		MovingBlock movB = new MovingBlock(0, 0);
@@ -63,18 +62,36 @@ public class MovementComputation implements Runnable{
 			System.out.println("click");	//use this to shoot later
 		
 		float x = 0, y = 0;
+		float moveSpeed = player.getMovementSpeed();
 		
+		//vertical movement
 		if(glfwGetKey(window, GLFW_KEY_W) == GL_TRUE) {
-			y+=.005f;
+			y+=moveSpeed;
 		}
-		if(glfwGetKey(window, GLFW_KEY_A) == GL_TRUE) {
-			x-=.005f;
+		else if(glfwGetKey(window, GLFW_KEY_S) == GL_TRUE) {
+			y-=moveSpeed;
 		}
-		if(glfwGetKey(window, GLFW_KEY_S) == GL_TRUE) {
-			y-=.005f;
-		}
+		//horizontal movement
 		if(glfwGetKey(window, GLFW_KEY_D) == GL_TRUE) {
-			x+=.005f;
+			x+=moveSpeed;
+		}
+		else if(glfwGetKey(window, GLFW_KEY_A) == GL_TRUE) {
+			x-=moveSpeed;
+		}
+		//adjust diagonal movement, so that diagonal movment isn't speed up
+		if(x!=0 && y!=0) {
+			float magnitude = (float)Math.sqrt((float)Math.pow(x, 2) + (float)Math.pow(y, 2));
+			
+			float factor = moveSpeed / magnitude;
+			
+			x *= factor;
+			y *= factor;
+		}
+
+		//sprint button pressed
+		if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GL_TRUE) {
+			x *= 2;
+			y *= 2;
 		}
 		
 		player.move(x, y);

@@ -4,6 +4,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Player extends GameObject{
 	
+	float movementSpeed = .005f;
+	
 	public Player(float posX, float posY) {
 		this.posX = posX;
 		this.posY = posY;
@@ -30,5 +32,14 @@ public class Player extends GameObject{
 	@Override
 	public void setOffset(float x, float y) {
 		//do nothing
+	}
+	
+	//for powerups maybe
+	public void modifyMovementSpeed(float modifier) {
+		movementSpeed *= modifier;
+	}
+	
+	public float getMovementSpeed() {
+		return movementSpeed;
 	}
 }
