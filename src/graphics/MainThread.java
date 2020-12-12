@@ -87,7 +87,7 @@ public class MainThread {
 		//loop through num of connected players within network
 		
 		//placeholder
-		Player player = new Player(0, 0);
+		Player player = new Player(0, 0, 0);
 		dynamicGameObjects.add(player);
 	}
 	
@@ -138,24 +138,25 @@ public class MainThread {
 			if(screenUpdated) {
 				synchronized(TOKEN) {
 					TOKEN.notify();	//syncs up position change with frame rate
-					}
-					
-					glClear(GL_COLOR_BUFFER_BIT);
-					
-					for (GameObject go : staticGameObjects) {
-						go.drawGraphic();
-					}
-
-					for (GameObject go : dynamicGameObjects) {
-						go.drawGraphic();
-					}
-					
-					glfwSwapBuffers(window);
-					frames++;
 				}
+					
+				glClear(GL_COLOR_BUFFER_BIT);
+				glLoadIdentity();
+				
+				for (GameObject go : staticGameObjects) {
+					go.drawGraphic();
+				}
+
+				for (GameObject go : dynamicGameObjects) {
+					go.drawGraphic();
+				}
+				
+				glfwSwapBuffers(window);
+				frames++;
 			}
+		}
 			
-			glfwTerminate();
+		glfwTerminate();
 	}
 	
 	//Utility methods

@@ -78,6 +78,7 @@ public class MovementComputation implements Runnable{
 		else if(glfwGetKey(window, GLFW_KEY_A) == GL_TRUE) {
 			x-=moveSpeed;
 		}
+		
 		//adjust diagonal movement, so that diagonal movment isn't speed up
 		if(x!=0 && y!=0) {
 			float magnitude = (float)Math.sqrt((float)Math.pow(x, 2) + (float)Math.pow(y, 2));
@@ -95,6 +96,7 @@ public class MovementComputation implements Runnable{
 		}
 		
 		player.move(x, y);
+		setObjectAngle(player, x, y);
 
 		if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GL_TRUE) {
 			//moveCompThread.stop();
@@ -120,10 +122,39 @@ public class MovementComputation implements Runnable{
 				y = -.005f + (.005f - -.005f) * r.nextFloat();
 				
 				go.move(x, y);
+				setObjectAngle(go, x, y);
 			}
 		}
 		for(GameObject go : staticGameObjects) {
 			go.setOffset(offsetX, offsetY);
 		}
+	}
+	
+	void setObjectAngle(GameObject go, float x, float y) {
+		if(x==0 && y>0) {	//top
+			go.setAngle(0);
+		}
+		if(x<0 && y>0) {	//top left
+			go.setAngle(45);
+		}
+		if(x<0 && y==0) {	//left
+			go.setAngle(90);
+		}
+		if(x<0 && y<0) {	//bottom left
+			go.setAngle(135);
+		}
+		if(x==0 && y<0) {	//bottom
+			go.setAngle(180);
+		}
+		if(x>0 && y<0) {	//bottom right
+			go.setAngle(-135);
+		}
+		if(x>0 && y==0) {	//right
+			go.setAngle(-90);
+		}
+		if(x>0 && y>0) {	//top right
+			go.setAngle(-45);
+		}
+			
 	}
 }

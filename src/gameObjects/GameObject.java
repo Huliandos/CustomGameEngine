@@ -4,6 +4,8 @@ public abstract class GameObject {
 	float posX, offsetX;
 	float posY, offsetY;
 	
+	float angle = 0f;
+	
 	public abstract void drawGraphic(); //How to Draw Graphic in here
 	
 	public void setPosition(float x, float y) {
@@ -27,5 +29,9 @@ public abstract class GameObject {
 	
 	public float getYPosition() {
 		return posY;
+	}
+	
+	public void setAngle(float angle) {
+		this.angle = angle;
 	}
 }
