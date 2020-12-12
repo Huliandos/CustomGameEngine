@@ -6,6 +6,9 @@ import static org.lwjgl.opengl.GL11.GL_TRUE;
 import java.util.ArrayList;
 import java.util.Random;
 
+import gameObjects.GameObject;
+import gameObjects.Player;
+
 public class MovementComputation implements Runnable{
 	ArrayList<GameObject> dynamicGameObjects;
 	ArrayList<GameObject> staticGameObjects;
