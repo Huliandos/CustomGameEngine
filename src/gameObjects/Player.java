@@ -10,12 +10,14 @@ public class Player extends GameObject{
 	int numOfCirclePoints = 90;
 	
 	int playerNum;	//delete it this isn't used later
+	boolean localPlayer;
 	
 	float r, g, b;
 	
-	public Player(float posX, float posY, int playerNum) {
+	public Player(float posX, float posY, int playerNum, boolean localPlayer) {
 		this.posX = posX;
 		this.posY = posY;
+		this.localPlayer = localPlayer;
 		
 		this.playerNum = playerNum;
 		
@@ -98,6 +100,10 @@ public class Player extends GameObject{
 	
 	public float getMovementSpeed() {
 		return movementSpeed;
+	}
+	
+	public boolean getLocalPlayer() {
+		return localPlayer;
 	}
 	
 	//for powerups maybe

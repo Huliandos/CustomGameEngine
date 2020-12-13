@@ -1,34 +1,32 @@
 package networking;
 
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 
-public class ServerJavaSocket {
-	static int port;
+public class ServerJavaSocket implements Runnable  {
+	int port;
+	long window;
 	
-	public static void main(String[] args) {
-		/*
-		try {
-			OneClientConnection();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
-		if (args.length < 1) {
-	        port = 4444;	//default port
-        } else {
-        	port = Integer.parseInt(args[0]);
-        }
-		
+	Object START_GAME_TOKEN;
+	
+	public ServerJavaSocket(int port, String userName, long window, Object START_GAME_TOKEN) {
+		this.port = port;
+		this.window = window;
+		this.START_GAME_TOKEN = START_GAME_TOKEN;
+	}
+	
+	@Override
+	public void run() {
 		try {
 			ServerSocket serverSocket = new ServerSocket(port);
 			
-			ServerInputHandler serverInputHandler = new ServerInputHandler();
+			ServerInputHandler serverInputHandler = new ServerInputHandler(START_GAME_TOKEN);
 			
-			while(true) {
+			while(!glfwWindowShouldClose(window)) {
 				try {
 					Socket socket = serverSocket.accept();
 					
@@ -44,5 +42,7 @@ public class ServerJavaSocket {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		System.out.println("Server Socket finished");
 	}
 }

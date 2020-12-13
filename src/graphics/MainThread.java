@@ -9,14 +9,27 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 import controlls.MovementComputation;
+
 import gameObjects.GameObject;
 import gameObjects.Player;
 import gameObjects.Tile;
 
+import networking.ClientJavaSocket;
+import networking.ServerJavaSocket;
+
 public class MainThread {
+	
+	//networking params
+	static boolean server;	//is user server or client?
+	static int port;
+	static String userName;
+	static ServerJavaSocket serverJavaSocket;
+	static Thread sjsThread;
+	static ClientJavaSocket clientJavaSocket;
 	
 	//Multi threading params
 	static Object FPS_SYNC_TOKEN;
+	static Object START_GAME_TOKEN;
 	
 	//Graphics params
 	static int screenWidth = 800; //640
@@ -32,38 +45,61 @@ public class MainThread {
 	static ArrayList<GameObject> dynamicGameObjects;	//players and Zombies
 	static ArrayList<GameObject> staticGameObjects;	//level
 	
-	public static void main(String[] args) {
+	//display text
+	
+	//game controlling variables
+	public static boolean startGame = false;
+	
+	
+	public static void main(String[] args) {	//args: bool for server, port, userName
 		
-		initNetworking();
+		//reading args, or setting default values if not enough args were provided
+		if (args.length < 1) {
+	        server = false;
+	        port = 4444;
+	        userName = "_default";
+        } else if (args.length < 2) {
+        	if(args[0] == "true")	server = true;
+			else server = false;
+        	
+	        port = 4444;
+	        userName = "_default";
+        }
+        else if (args.length < 3) {
+        	if(args[0] == "true")	server = true;
+			else server = false;
+        	
+	        port = Integer.parseInt(args[1]);
+	        
+	        userName = "_default";
+        }
+		else {
+			if(args[0].contains("true")) server = true;
+			else server = false;
+        	
+	        port = Integer.parseInt(args[1]);
+	        
+	        userName = args[2];
+        }
+		FPS_SYNC_TOKEN = new Object();
+		START_GAME_TOKEN = new Object();
 		
 		initGraphics();
+		
+		initNetworking();
 		
 		initObjects();
 		
 		initMovementComputation();
+
+		preGameloop();
 		
 		gameloop();
-		
-	}
-	
-	static void initNetworking() {
-		
 	}
 
 	static void initGraphics() {
 		dynamicGameObjects = new ArrayList<GameObject>();
 		staticGameObjects = new ArrayList<GameObject>();
-		
-		//static objects
-		//tiles
-		//wände
-		//power ups
-		for(int y=0; y<8; y++) {
-			for(int x=0; x<8; x++) {
-				Tile tile = new Tile(x*.51f, y*.51f, .5f, .5f);
-				staticGameObjects.add(tile);
-			}
-		}
 		
 		//lwjgl screen setup
 		if(!glfwInit()) throw new IllegalStateException("failed to initialize glfw");
@@ -82,21 +118,105 @@ public class MainThread {
 		GL.createCapabilities();
 	}
 	
+	static void initNetworking() {
+		if (server) {
+			System.out.println("Server client");
+			serverJavaSocket = new ServerJavaSocket(port, userName, window, START_GAME_TOKEN);
+			
+			sjsThread = new Thread(serverJavaSocket);
+			sjsThread.start();
+			
+			clientJavaSocket = new ClientJavaSocket(port, userName, window, FPS_SYNC_TOKEN);
+		}
+		else {
+			clientJavaSocket = new ClientJavaSocket(port, userName, window, FPS_SYNC_TOKEN);
+		}
+	}
+	
 	static void initObjects() {
+		//static objects
+		//tiles
+		//wände
+		//power ups
+		for(int y=0; y<8; y++) {
+			for(int x=0; x<8; x++) {
+				Tile tile = new Tile(x*.51f, y*.51f, .5f, .5f);
+				staticGameObjects.add(tile);
+			}
+		}
+		
+		//dynamic objects
 		//loop through num of connected players within network
 		
 		//placeholder
-		Player player = new Player(0, 0, 0);
+		Player player = new Player(0, 0, 0, true);
 		dynamicGameObjects.add(player);
 	}
 	
 	static void initMovementComputation(){
 		//Initialize Thread for Input Control and Object moving
-		FPS_SYNC_TOKEN = new Object();
 		moveComp = new MovementComputation(dynamicGameObjects, staticGameObjects, window, FPS_SYNC_TOKEN);
+		
 		moveCompThread = new Thread(moveComp);
 		moveCompThread.start();
+	}
+	
+	static void preGameloop() {
 		
+		double frameCap = 1/60d;	//1 frame per 60 seconds
+
+		double time = getTime();
+		double unprocessed = 0;		//time where game hasn't been processed yet
+		
+		
+		//while loop drawing the scene
+		while(!startGame) {
+			boolean screenUpdated = false;
+			
+			double time_2 = getTime();
+			double passed = time_2 - time;
+			unprocessed += passed;
+			
+			time = time_2;
+			
+			while(unprocessed >= frameCap) {	//put everything in here that isn't rendering
+				unprocessed -= frameCap;
+				screenUpdated = true;
+				
+				glfwPollEvents();
+			}
+			
+			if(screenUpdated) {
+				glClear(GL_COLOR_BUFFER_BIT);
+				glLoadIdentity();
+				
+				glClear(GL_COLOR_BUFFER_BIT);
+				if (server) {	//if player is host
+					if(glfwGetKey(window, GLFW_KEY_SPACE) == GL_TRUE) {
+						startGame = true;
+						synchronized(START_GAME_TOKEN) {START_GAME_TOKEN.notify();}
+						
+						//ToDo: 
+						//Send start game over server to clients together with how many players are in the game --> Handled by UserThread in networking
+					}
+					
+					//ToDo: Find a way to display players text here
+					
+					//font.drawString(100, 50, "Players connected: ", Color.white);
+					//font.drawString(100, 100, "Press SPACE to start game..", Color.gray);
+				}
+				else {
+					//font.drawString(100, 50, "Waiting for Host to start game... ", Color.white);
+					if(clientJavaSocket.getTotalPlayerNum() != 0) {	//value has been initialized, meaning that game has started
+						
+						
+						startGame = true;
+					}
+				}
+				
+				glfwSwapBuffers(window);
+			}
+		}
 	}
 	
 	static void gameloop() {
@@ -158,8 +278,19 @@ public class MainThread {
 		glfwTerminate();
 	}
 	
+	//doesn't work?
+	static void shutdown() {
+		if(serverJavaSocket != null) sjsThread.interrupt();
+		
+		moveCompThread.interrupt();
+	}
+	
 	//Utility methods
 	static double getTime() {
 		return (double)System.nanoTime() / (double)1000000000L;	// number is 1 billion --> casts nano time to seconds
+	}
+	
+	public static MovementComputation getMoveComp(){
+		return moveComp;
 	}
 }

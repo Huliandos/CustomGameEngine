@@ -6,24 +6,28 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import graphics.MainThread;
+
 public class ServerUserThread implements Runnable {
 	Socket socket;
 	BufferedReader in;
 	PrintWriter out;
-	ServerInputHandler scHandler;
+	ServerInputHandler serverInputHandler;
 	
-	public ServerUserThread(Socket socket, ServerInputHandler scHandler, int numOfUsers){
+	Object START_GAME_TOKEN;
+	
+	public ServerUserThread(Socket socket, ServerInputHandler serverInputHandler, int numOfUsers, Object START_GAME_TOKEN){
+		this.START_GAME_TOKEN = START_GAME_TOKEN;
+		
 		try {
 			this.socket = socket;
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			
-			this.scHandler = scHandler;
+			this.serverInputHandler = serverInputHandler;
 			
 			//Initiate conversation with client
-		    out.println("Connected to Server with " + numOfUsers + " users");
-		    out.println("Enter a username:");
-		    out.println("Welcome " + in.readLine() + "!");
+		    out.println(numOfUsers);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -32,32 +36,47 @@ public class ServerUserThread implements Runnable {
 	
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		try {
+			synchronized(START_GAME_TOKEN) {START_GAME_TOKEN.wait();}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("ServerUserThead: waiting has finish");
+
+		int numOfUsersConnected = serverInputHandler.getNumOfUsersConnected();
+		sendStartGame(String.valueOf(numOfUsersConnected));
+		
 		String inputLine;
 		
 		try {
 			while ((inputLine = in.readLine()) != null) {
-				if(inputLine == "bye")	break;
-			    //send message to distributor
-			    scHandler.broadcastMessage(inputLine, this);
+				//Possible ToDo:
+				//Read Input line here and check if action is legitimate, send user his real Input back (Securing that cheating isn't possible)
+				
+				serverInputHandler.broadcastInput(inputLine, this);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		scHandler.removeUser(this);
+		serverInputHandler.removeUser(this);
         try {
 			socket.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-        scHandler.broadcastMessage("User has quit", this);	//ToDo fetch user name and display user that has left the chat
 	}
 	
-	void sendMessage(String message) {
-		out.println(message);
+	//send Inputs every frame
+	void sendInputs(String input) {
+		out.println(input);
+	}
+	
+	void sendStartGame(String str) {
+		out.println(str);
 	}
 }

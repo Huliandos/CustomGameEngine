@@ -18,7 +18,7 @@ public class ClientReadThread extends Thread {
             ex.printStackTrace();
         }
     }
- 
+
     public void run() {
         while (true) {
             try {
