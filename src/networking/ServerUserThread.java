@@ -46,7 +46,8 @@ public class ServerUserThread implements Runnable {
 		System.out.println("ServerUserThead: waiting has finish");
 
 		int numOfUsersConnected = serverInputHandler.getNumOfUsersConnected();
-		sendStartGame(String.valueOf(numOfUsersConnected));
+		//sendStartGame(String.valueOf(serverInputHandler));
+		serverInputHandler.broadcastInput(String.valueOf(numOfUsersConnected), this);
 		
 		String inputLine;
 		

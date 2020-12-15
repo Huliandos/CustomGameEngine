@@ -41,7 +41,7 @@ public class ClientReadThread extends Thread {
             String totalPlayerNum = in.readLine();		//BUG: This gives weird output on Client (in two player game 2 0) even though just 2 ist expected.
             System.out.println("ClientReadThread: " + totalPlayerNum);
             
-            clientJavaSocket.setLocalPlayerNum(Integer.valueOf(totalPlayerNum.charAt(0)));	//charAt is just a hotfix cause of the bug above. Find a way to properly manage the issue
+            clientJavaSocket.setTotalPlayerNum(Integer.valueOf(totalPlayerNum.charAt(0)));	//charAt is just a hotfix cause of the bug above. Find a way to properly manage the issue
             
             //at this point the game has started, so start input writing
             cwt.start();

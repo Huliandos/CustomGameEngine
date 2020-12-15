@@ -87,12 +87,12 @@ public class MainThread {
 		initGraphics();
 		
 		initNetworking();
+
+		preGameloop();
 		
 		initObjects();
 		
 		initMovementComputation();
-
-		preGameloop();
 		
 		gameloop();
 	}
@@ -167,8 +167,7 @@ public class MainThread {
 
 		double time = getTime();
 		double unprocessed = 0;		//time where game hasn't been processed yet
-		
-		
+
 		//while loop drawing the scene
 		while(!startGame) {
 			boolean screenUpdated = false;
@@ -191,6 +190,7 @@ public class MainThread {
 				glLoadIdentity();
 				
 				glClear(GL_COLOR_BUFFER_BIT);
+				
 				if (server) {	//if player is host
 					if(glfwGetKey(window, GLFW_KEY_SPACE) == GL_TRUE) {
 						startGame = true;
@@ -208,8 +208,6 @@ public class MainThread {
 				else {
 					//font.drawString(100, 50, "Waiting for Host to start game... ", Color.white);
 					if(clientJavaSocket.getTotalPlayerNum() != 0) {	//value has been initialized, meaning that game has started
-						
-						
 						startGame = true;
 					}
 				}
