@@ -39,7 +39,7 @@ public class ClientJavaSocket {
 		this.userPlayerNum = playerNum;
 	}
 	
-	int getLocalPlayerNum() {
+	public int getLocalPlayerNum() {
 		return userPlayerNum;
 	}
 	

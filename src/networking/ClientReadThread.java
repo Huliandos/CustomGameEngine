@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import graphics.MainThread;
+
 public class ClientReadThread extends Thread {
 	private BufferedReader in;
     String userName;
@@ -33,15 +35,15 @@ public class ClientReadThread extends Thread {
         try {
         	//get local player num
             String playerNumString = in.readLine();
-            System.out.println("ClientReadThread: " + Integer.valueOf(playerNumString));
+            //System.out.println("ClientReadThread: " + Integer.valueOf(playerNumString));
             
             clientJavaSocket.setLocalPlayerNum(Integer.valueOf(playerNumString));
             
         	//get total player num
             String totalPlayerNum = in.readLine();		//BUG: This gives weird output on Client (in two player game 2 0) even though just 2 ist expected.
-            System.out.println("ClientReadThread: " + totalPlayerNum);
+            //System.out.println("ClientReadThread: " + Integer.valueOf(totalPlayerNum));
             
-            clientJavaSocket.setTotalPlayerNum(Integer.valueOf(totalPlayerNum.charAt(0)));	//charAt is just a hotfix cause of the bug above. Find a way to properly manage the issue
+            clientJavaSocket.setTotalPlayerNum(Integer.valueOf(totalPlayerNum));	//charAt is just a hotfix cause of the bug above. Find a way to properly manage the issue
             
             //at this point the game has started, so start input writing
             cwt.start();
@@ -54,8 +56,10 @@ public class ClientReadThread extends Thread {
                 int inputCode = Integer.valueOf(response[1]);
                 
                 //execute the command that this player has send
-                
-                System.out.println("playerNum: " + response[0] + " inputCode: " + response[1]);
+            	if(MainThread.getMoveComp() != null) {
+            		MainThread.getMoveComp().setPlayerInput(playerNum, inputCode);
+            	}
+                //System.out.println("playerNum: " + response[0] + " inputCode: " + response[1]);
             }
         } catch (IOException ex) {
             System.out.println("Error reading from server: " + ex.getMessage());

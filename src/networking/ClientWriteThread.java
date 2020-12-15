@@ -41,7 +41,7 @@ public class ClientWriteThread extends Thread{
     }
  
     public void run() {
-    	System.out.println("Client Write Thread started");
+    	//System.out.println("Client Write Thread started");
     	
         while(!glfwWindowShouldClose(window)) {
         	if(MainThread.getMoveComp() != null) {

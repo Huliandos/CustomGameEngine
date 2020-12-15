@@ -13,14 +13,16 @@ public class ServerInputHandler {
 	}
 	
 	public void addSocket(Socket socket) {
-
-		ServerUserThread user = new ServerUserThread(socket, this, users.size(), START_GAME_TOKEN);
+		ServerUserThread user;
+		if(users.size() == 0)	user = new ServerUserThread(socket, this, users.size(), START_GAME_TOKEN, true);
+		else user = new ServerUserThread(socket, this, users.size(), START_GAME_TOKEN, false);
 		//add user to distributor list
 		users.add(user);
 		
 		//initialize new Thread for message Handling
 		Thread userThread = new Thread(user);
 		userThread.start();
+		System.out.println("ServerInputHandler: added user to socket");
 	}
 	
 	public void removeUser(ServerUserThread user) {

@@ -133,34 +133,6 @@ public class MainThread {
 		}
 	}
 	
-	static void initObjects() {
-		//static objects
-		//tiles
-		//wände
-		//power ups
-		for(int y=0; y<8; y++) {
-			for(int x=0; x<8; x++) {
-				Tile tile = new Tile(x*.51f, y*.51f, .5f, .5f);
-				staticGameObjects.add(tile);
-			}
-		}
-		
-		//dynamic objects
-		//loop through num of connected players within network
-		
-		//placeholder
-		Player player = new Player(0, 0, 0, true);
-		dynamicGameObjects.add(player);
-	}
-	
-	static void initMovementComputation(){
-		//Initialize Thread for Input Control and Object moving
-		moveComp = new MovementComputation(dynamicGameObjects, staticGameObjects, window, FPS_SYNC_TOKEN);
-		
-		moveCompThread = new Thread(moveComp);
-		moveCompThread.start();
-	}
-	
 	static void preGameloop() {
 		
 		double frameCap = 1/60d;	//1 frame per 60 seconds
@@ -215,6 +187,41 @@ public class MainThread {
 				glfwSwapBuffers(window);
 			}
 		}
+	}
+	
+	static void initObjects() {
+		//static objects
+		//tiles
+		//wände
+		//power ups
+		for(int y=0; y<8; y++) {
+			for(int x=0; x<8; x++) {
+				Tile tile = new Tile(x*.51f, y*.51f, .5f, .5f);
+				staticGameObjects.add(tile);
+			}
+		}
+		
+		//dynamic objects
+		//loop through num of connected players within network
+
+		//add local player
+		Player player = new Player(0, 0, clientJavaSocket.getLocalPlayerNum(), true);
+		dynamicGameObjects.add(player);
+
+		for (int i=0; i<clientJavaSocket.getTotalPlayerNum(); i++) {
+			if(i != clientJavaSocket.getLocalPlayerNum()) {
+				player = new Player(0, 0, i, false);
+				dynamicGameObjects.add(player);
+			}
+		}
+	}
+	
+	static void initMovementComputation(){
+		//Initialize Thread for Input Control and Object moving
+		moveComp = new MovementComputation(dynamicGameObjects, staticGameObjects, window, FPS_SYNC_TOKEN);
+		
+		moveCompThread = new Thread(moveComp);
+		moveCompThread.start();
 	}
 	
 	static void gameloop() {

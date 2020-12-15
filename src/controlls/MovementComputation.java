@@ -19,6 +19,7 @@ public class MovementComputation implements Runnable{
 	long window;
 	
 	int playerInputCode = 0;	//in byte: bit 1: right, bit 2: left, bit 3: up, bit 4: down, bit 5 sprint, bit 6 shoot
+	int[] playerInputCodes = new int[6];
 	
 	Object TOKEN;
 	
@@ -65,7 +66,7 @@ public class MovementComputation implements Runnable{
 		playerInputCode = 0;
 		
 		//if(glfwGetMouseButton(window, 0) == GL_TRUE)	//0 = left click, 1 = right click, 2 = middle mouse button
-			//System.out.println("click");	//use this to shoot later
+			//System.out.println("click");
 		
 		float x = 0, y = 0;
 		float moveSpeed = player.getMovementSpeed();
@@ -89,7 +90,7 @@ public class MovementComputation implements Runnable{
 			playerInputCode += 8;	//fourth bit
 		}
 		
-		//adjust diagonal movement, so that diagonal movment isn't speed up
+		//adjust diagonal movement, so that diagonal movement isn't speed up
 		if(x!=0 && y!=0) {
 			float magnitude = (float)Math.sqrt((float)Math.pow(x, 2) + (float)Math.pow(y, 2));
 			
@@ -173,12 +174,18 @@ public class MovementComputation implements Runnable{
 	}
 	
 	void moveObjects() {
-		for(GameObject go : dynamicGameObjects) {
-			if(go==player && ((Player) go).getLocalPlayer()) {
+		for(int i=0; i<dynamicGameObjects.size(); i++){
+			GameObject go = dynamicGameObjects.get(i);
+			
+			if(go==player) {	//local player
 				offsetX = player.getXPosition();
 				offsetY = player.getYPosition();
 			}
-			else{
+			else if(go.getClass() == Player.class) {	//networked players
+				go.setOffset(offsetX, offsetY);
+				applyInputCode((Player)go, playerInputCodes[((Player)go).getPlayerNum()]);
+			}
+			else{	//zombies
 				go.setOffset(offsetX, offsetY);
 				
 				float x = 0, y = 0;
@@ -227,5 +234,10 @@ public class MovementComputation implements Runnable{
 	
 	public int getPlayerInputCode() {
 		return playerInputCode;
+	}
+	
+	public void setPlayerInput(int playerNum, int inputCode) {
+		//System.out.println("Setting player " + playerNum + " input to: " + inputCode);
+		playerInputCodes[playerNum] = inputCode;
 	}
 }

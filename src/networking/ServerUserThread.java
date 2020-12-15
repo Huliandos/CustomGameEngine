@@ -13,11 +13,13 @@ public class ServerUserThread implements Runnable {
 	BufferedReader in;
 	PrintWriter out;
 	ServerInputHandler serverInputHandler;
+	boolean hostThread;
 	
 	Object START_GAME_TOKEN;
 	
-	public ServerUserThread(Socket socket, ServerInputHandler serverInputHandler, int numOfUsers, Object START_GAME_TOKEN){
+	public ServerUserThread(Socket socket, ServerInputHandler serverInputHandler, int numOfUsers, Object START_GAME_TOKEN, boolean hostThread){
 		this.START_GAME_TOKEN = START_GAME_TOKEN;
+		this.hostThread = hostThread;
 		
 		try {
 			this.socket = socket;
@@ -43,11 +45,14 @@ public class ServerUserThread implements Runnable {
 			e.printStackTrace();
 		}
 		
-		System.out.println("ServerUserThead: waiting has finish");
-
-		int numOfUsersConnected = serverInputHandler.getNumOfUsersConnected();
-		//sendStartGame(String.valueOf(serverInputHandler));
-		serverInputHandler.broadcastInput(String.valueOf(numOfUsersConnected), this);
+		if(hostThread) {	//host sends init data to every client
+			int numOfUsersConnected = serverInputHandler.getNumOfUsersConnected();
+			
+			//send num of users over network
+			serverInputHandler.broadcastInput(String.valueOf(numOfUsersConnected), this);
+			//set num of users on local client
+			sendStartGame(String.valueOf(numOfUsersConnected));
+		}
 		
 		String inputLine;
 		

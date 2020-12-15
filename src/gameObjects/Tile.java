@@ -17,11 +17,16 @@ public class Tile extends GameObject {
 	@Override
 	public void drawGraphic() {
 		glBegin(GL_QUADS);
-			glColor4f(.8f,.8f,.8f,0);
-			glVertex2f(posX - width/2 - offsetX, posY + height/2 - offsetY);
-			glVertex2f(posX + width/2 - offsetX, posY + height/2 - offsetY);
-			glVertex2f(posX + width/2 - offsetX, posY - height/2 - offsetY);
-			glVertex2f(posX - width/2 - offsetX, posY - height/2 - offsetY);
+			//glPushMatrix();
+
+				//glTranslatef(-offsetX, -offsetY, 0);
+				glColor4f(.8f,.8f,.8f,0);
+				glVertex2f(posX - width/2 - offsetX, posY + height/2 - offsetY);
+				glVertex2f(posX + width/2 - offsetX, posY + height/2 - offsetY);
+				glVertex2f(posX + width/2 - offsetX, posY - height/2 - offsetY);
+				glVertex2f(posX - width/2 - offsetX, posY - height/2 - offsetY);
+				
+			//glPopMatrix();
 		glEnd();
 	}
 	

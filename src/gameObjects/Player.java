@@ -57,7 +57,10 @@ public class Player extends GameObject{
 	@Override
 	public void drawGraphic() {
 		glPushMatrix();
-		
+
+			glTranslatef(-offsetX, -offsetY, 0);	//offset to main player
+			if(!localPlayer)
+				glTranslatef(posX, posY, 0);	//move networked players to their position in the world
 			glRotatef (angle, 0, 0, 1);
 			glColor4f(r,g,b,0);
 			
@@ -67,7 +70,7 @@ public class Player extends GameObject{
 		        float theta = 360f / (float)numOfCirclePoints * i ;	//get the current angle 
 		        
 				glPushMatrix();
-				
+
 					glRotatef (theta, 0, 0, 1);
 					
 					glBegin(GL_QUADS);
@@ -83,7 +86,7 @@ public class Player extends GameObject{
 		    //draws player arms to show firing direction
 			glPushMatrix();
 			
-				glTranslatef((float)Math.sqrt(Math.pow(playerSize, 2) + Math.pow(playerSize, 2)), 0, 0);
+				glTranslatef((float)Math.sqrt(Math.pow(playerSize, 2) + Math.pow(playerSize, 2)), 0, 0);	//offset from body
 		
 				//glColor4f(0,0,0,0);
 			    glBegin(GL_QUADS);
@@ -104,6 +107,10 @@ public class Player extends GameObject{
 	
 	public boolean getLocalPlayer() {
 		return localPlayer;
+	}
+	
+	public int getPlayerNum() {
+		return playerNum;
 	}
 	
 	//for powerups maybe
