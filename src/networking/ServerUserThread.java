@@ -38,14 +38,15 @@ public class ServerUserThread implements Runnable {
 	
 	@Override
 	public void run() {
-		try {
-			synchronized(START_GAME_TOKEN) {START_GAME_TOKEN.wait();}
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		if(hostThread) {	//host sends init data to every client
+			try {
+				synchronized(START_GAME_TOKEN) {START_GAME_TOKEN.wait();}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		
 			int numOfUsersConnected = serverInputHandler.getNumOfUsersConnected();
 			
 			//send num of users over network
@@ -53,6 +54,7 @@ public class ServerUserThread implements Runnable {
 			//set num of users on local client
 			sendStartGame(String.valueOf(numOfUsersConnected));
 		}
+		//client can start listening instantaneously
 		
 		String inputLine;
 		

@@ -54,7 +54,8 @@ public class ClientReadThread extends Thread {
                 //extract data out of send string
                 int playerNum = Integer.valueOf(response[0]);
                 int inputCode = Integer.valueOf(response[1]);
-                
+
+	        	//System.out.println("ClientReadThread: reading input text " + inputCode + " from player " + playerNum);
                 //execute the command that this player has send
             	if(MainThread.getMoveComp() != null) {
             		MainThread.getMoveComp().setPlayerInput(playerNum, inputCode);
