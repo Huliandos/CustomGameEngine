@@ -201,8 +201,8 @@ public class MainThread {
 			}
 		}
 		
-		//wände
-			//Außenwände
+		//wï¿½nde
+			//Auï¿½enwï¿½nde
 			Wall o = new Wall(0, 0, mazeSize, 0);
 			Wall l = new Wall(0, 0, 0, mazeSize);
 			Wall r = new Wall(mazeSize, 0, mazeSize, mazeSize);
@@ -212,8 +212,10 @@ public class MainThread {
 			staticGameObjects.add(r);
 			staticGameObjects.add(u);
 			
-			//Innenwände
+			//Innenwï¿½nde
 			
+=======
+		
 		
 		
 		//power ups
