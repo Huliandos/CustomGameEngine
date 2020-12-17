@@ -4,6 +4,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -194,15 +195,16 @@ public class MainThread {
 		//static objects
 		//tiles
 		float mazeSize = 8;
+		float tileSize = .5f;
 		for(int y=0; y<mazeSize; y++) {
 			for(int x=0; x<mazeSize; x++) {
-				Tile tile = new Tile(x*.51f, y*.51f, .5f, .5f);
+				Tile tile = new Tile(x*.51f, y*.51f, tileSize, tileSize);
 				staticGameObjects.add(tile);
 			}
 		}
 		
-		//wï¿½nde
-			//Auï¿½enwï¿½nde
+		//wände
+			//Außenwände
 			Wall o = new Wall(0, 0, mazeSize, 0);
 			Wall l = new Wall(0, 0, 0, mazeSize);
 			Wall r = new Wall(mazeSize, 0, mazeSize, mazeSize);
@@ -212,10 +214,28 @@ public class MainThread {
 			staticGameObjects.add(r);
 			staticGameObjects.add(u);
 			
-			//Innenwï¿½nde
-			
-=======
-		
+			//Innenwände
+			for(int y=0; y>mazeSize; y++) {
+				for(int x=0; x<mazeSize; x++) {
+					double random = Math.random();
+					if(random < 0.1) {
+					Wall wall = new Wall(x, y, x + tileSize, y);  //Oben
+					staticGameObjects.add(wall);
+					}
+					else if(random < 0.2 && random >= 0.1) {
+						Wall wall = new Wall(x + tileSize, y, x+tileSize, y+tileSize); // rechts
+						staticGameObjects.add(wall);
+					}
+					else if(random < 0.3 && random >=0.2) {
+						Wall wall = new Wall(x, y, x, y+tileSize); // links
+						staticGameObjects.add(wall);
+					}
+					if(random < 0.4 && random >= 0.3) {
+						Wall wall = new Wall(x, y + tileSize, x+tileSize, y+tileSize); // unten
+						staticGameObjects.add(wall);
+					}
+				}
+			}
 		
 		
 		//power ups
