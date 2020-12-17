@@ -193,15 +193,21 @@ public class MainThread {
 	static void initObjects() {
 		//static objects
 		//tiles
+<<<<<<< HEAD
 		float mazeSize = 8;
 		for(int y=0; y<mazeSize; y++) {
 			for(int x=0; x<mazeSize; x++) {
+=======
+		for(int y=0; y<8; y++) {
+			for(int x=0; x<8; x++) {
+>>>>>>> master
 				Tile tile = new Tile(x*.51f, y*.51f, .5f, .5f);
 				staticGameObjects.add(tile);
 			}
 		}
 		
 		//wände
+<<<<<<< HEAD
 			//Außenwände
 			Wall o = new Wall(0, 0, mazeSize, 0);
 			Wall l = new Wall(0, 0, 0, mazeSize);
@@ -214,6 +220,9 @@ public class MainThread {
 			
 			//Innenwände
 			
+=======
+		
+>>>>>>> master
 		
 		
 		//power ups
