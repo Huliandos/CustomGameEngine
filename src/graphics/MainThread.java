@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
 
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
@@ -13,7 +14,7 @@ import controlls.MovementComputation;
 import gameObjects.GameObject;
 import gameObjects.Player;
 import gameObjects.Tile;
-
+import gameObjects.Wall;
 import networking.ClientJavaSocket;
 import networking.ServerJavaSocket;
 
@@ -192,14 +193,30 @@ public class MainThread {
 	static void initObjects() {
 		//static objects
 		//tiles
-		//wände
-		//power ups
-		for(int y=0; y<8; y++) {
-			for(int x=0; x<8; x++) {
+		float mazeSize = 8;
+		for(int y=0; y<mazeSize; y++) {
+			for(int x=0; x<mazeSize; x++) {
 				Tile tile = new Tile(x*.51f, y*.51f, .5f, .5f);
 				staticGameObjects.add(tile);
 			}
 		}
+		
+		//wände
+			//Außenwände
+			Wall o = new Wall(0, 0, mazeSize, 0);
+			Wall l = new Wall(0, 0, 0, mazeSize);
+			Wall r = new Wall(mazeSize, 0, mazeSize, mazeSize);
+			Wall u = new Wall(0, mazeSize, mazeSize, mazeSize);
+			staticGameObjects.add(o);
+			staticGameObjects.add(l);
+			staticGameObjects.add(r);
+			staticGameObjects.add(u);
+			
+			//Innenwände
+			
+		
+		
+		//power ups
 		
 		//dynamic objects
 		//loop through num of connected players within network
