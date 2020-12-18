@@ -27,6 +27,5 @@ public class Tile extends GameObject {
 				
 			//glPopMatrix();
 		glEnd();
-<<<<<<< HEAD
 	}
 }

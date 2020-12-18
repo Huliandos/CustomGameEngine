@@ -198,40 +198,40 @@ public class MainThread {
 		float tileSize = .5f;
 		for(int y=0; y<mazeSize; y++) {
 			for(int x=0; x<mazeSize; x++) {
-				Tile tile = new Tile(x*.51f, y*.51f, tileSize, tileSize);
+				Tile tile = new Tile(x*.5f, y*.5f, tileSize, tileSize);
 				staticGameObjects.add(tile);
 			}
 		}
 		
 		//wände
 			//Außenwände
-			Wall o = new Wall(0, 0, mazeSize, 0);
-			Wall l = new Wall(0, 0, 0, mazeSize);
-			Wall r = new Wall(mazeSize, 0, mazeSize, mazeSize);
-			Wall u = new Wall(0, mazeSize, mazeSize, mazeSize);
+			Wall o = new Wall(0, 0, true);
+			Wall l = new Wall(.5f, .5f, false);
+			Wall r = new Wall(1, 1, true);
+			Wall u = new Wall(1.5f, 1.5f, false);
 			staticGameObjects.add(o);
 			staticGameObjects.add(l);
 			staticGameObjects.add(r);
 			staticGameObjects.add(u);
 			
 			//Innenwände
-			for(int y=0; y>mazeSize; y++) {
+			for(int y=0; y<mazeSize; y++) {
 				for(int x=0; x<mazeSize; x++) {
 					double random = Math.random();
 					if(random < 0.1) {
-					Wall wall = new Wall(x, y, x + tileSize, y);  //Oben
-					staticGameObjects.add(wall);
+						Wall wall = new Wall(x*.5f, (y+tileSize/2)*.5f, true);  //Oben
+						staticGameObjects.add(wall);
 					}
 					else if(random < 0.2 && random >= 0.1) {
-						Wall wall = new Wall(x + tileSize, y, x+tileSize, y+tileSize); // rechts
+						Wall wall = new Wall((x+tileSize/2)*.5f, y*.5f, false); // rechts
 						staticGameObjects.add(wall);
 					}
 					else if(random < 0.3 && random >=0.2) {
-						Wall wall = new Wall(x, y, x, y+tileSize); // links
+						Wall wall = new Wall((x-tileSize/2)*.5f, y*.5f, false); // links
 						staticGameObjects.add(wall);
 					}
 					if(random < 0.4 && random >= 0.3) {
-						Wall wall = new Wall(x, y + tileSize, x+tileSize, y+tileSize); // unten
+						Wall wall = new Wall(x*.5f, (y-tileSize/2)*.5f, true); // unten
 						staticGameObjects.add(wall);
 					}
 				}
