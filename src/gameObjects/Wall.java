@@ -35,12 +35,13 @@ public class Wall extends GameObject{
 		glPushMatrix();
 
 			//glTranslatef(-offsetX, -offsetY, 0);
-			if(horizontal) glRotatef(90, 0, 0, 1);
+			//if(horizontal) glRotatef(90, 0, 0, 1);
 			glColor4f(.76f,.4f,0,0);
 			glVertex2f(posX - width/2 - offsetX, posY + height/2 - offsetY);
 			glVertex2f(posX + width/2 - offsetX, posY + height/2 - offsetY);
 			glVertex2f(posX + width/2 - offsetX, posY - height/2 - offsetY);
 			glVertex2f(posX - width/2 - offsetX, posY - height/2 - offsetY);
+			if(horizontal) glRotatef(90, 0, 0, 1);
 			
 		glPopMatrix();
 		glEnd();

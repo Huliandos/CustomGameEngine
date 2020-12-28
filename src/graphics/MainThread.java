@@ -16,6 +16,7 @@ import gameObjects.GameObject;
 import gameObjects.Player;
 import gameObjects.Tile;
 import gameObjects.Wall;
+import levelBuild.computeLevel;
 import networking.ClientJavaSocket;
 import networking.ServerJavaSocket;
 
@@ -194,7 +195,7 @@ public class MainThread {
 	static void initObjects() {
 		//static objects
 		//tiles
-		float mazeSize = 8;
+		float mazeSize = 4;
 		float tileSize = .5f;
 		for(int y=0; y<mazeSize; y++) {
 			for(int x=0; x<mazeSize; x++) {
@@ -203,9 +204,14 @@ public class MainThread {
 			}
 		}
 		
+		ArrayList<GameObject> walls = computeLevel.drawWalls("9,9,1,3,10,6,2,2,8,4,6,2,14,4,4,6", mazeSize, tileSize);
+		for (GameObject wall : walls) {
+			staticGameObjects.add(wall);
+		}
+		
 		//w‰nde
 			//Auﬂenw‰nde
-			Wall o = new Wall(0, 0, true);
+			/*Wall o = new Wall(0, 0, true);
 			Wall l = new Wall(.5f, .5f, false);
 			Wall r = new Wall(1, 1, true);
 			Wall u = new Wall(1.5f, 1.5f, false);
@@ -235,7 +241,7 @@ public class MainThread {
 						staticGameObjects.add(wall);
 					}
 				}
-			}
+			}*/
 		
 		
 		//power ups
