@@ -16,7 +16,11 @@ import gameObjects.GameObject;
 import gameObjects.Player;
 import gameObjects.Tile;
 import gameObjects.Wall;
+<<<<<<< Updated upstream
 import levelBuild.computeLevel;
+=======
+import levelBuild.ComputeLevel;
+>>>>>>> Stashed changes
 import networking.ClientJavaSocket;
 import networking.ServerJavaSocket;
 
@@ -199,22 +203,34 @@ public class MainThread {
 		float tileSize = .5f;
 		for(int y=0; y<mazeSize; y++) {
 			for(int x=0; x<mazeSize; x++) {
-				Tile tile = new Tile(x*.5f, y*.5f, tileSize, tileSize);
+				Tile tile = new Tile(x*.51f, y*.51f, tileSize, tileSize);
 				staticGameObjects.add(tile);
 			}
 		}
 		
+<<<<<<< Updated upstream
 		ArrayList<GameObject> walls = computeLevel.drawWalls("9,9,1,3,10,6,2,2,8,4,6,2,14,4,4,6", mazeSize, tileSize);
+=======
+		ArrayList<GameObject> walls = ComputeLevel.drawWalls("9,9,1,3,10,6,2,2,8,4,6,2,14,4,4,6", mazeSize, tileSize);
+>>>>>>> Stashed changes
 		for (GameObject wall : walls) {
 			staticGameObjects.add(wall);
 		}
 		
 		//wände
+<<<<<<< Updated upstream
 			//Außenwände
 			/*Wall o = new Wall(0, 0, true);
 			Wall l = new Wall(.5f, .5f, false);
 			Wall r = new Wall(1, 1, true);
 			Wall u = new Wall(1.5f, 1.5f, false);
+=======
+			/*//Außenwände
+			Wall o = new Wall(0-tileSize/2, 0, true);
+			Wall l = new Wall(0-tileSize/2, 0, false);
+			Wall r = new Wall(0+tileSize/2, 0, true);
+			Wall u = new Wall(0-tileSize/2, 0, false);
+>>>>>>> Stashed changes
 			staticGameObjects.add(o);
 			staticGameObjects.add(l);
 			staticGameObjects.add(r);

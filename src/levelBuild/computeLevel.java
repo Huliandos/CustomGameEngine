@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import gameObjects.GameObject;
 import gameObjects.Wall;
 
+<<<<<<< Updated upstream
 public class computeLevel {
 
 	
@@ -13,6 +14,13 @@ public class computeLevel {
 =======
 	public ArrayList<GameObject> drawWalls(String seed, float mazeSize, float tileSize) {
 >>>>>>> master
+=======
+public class ComputeLevel {
+
+	
+	
+	public static ArrayList<GameObject> drawWalls(String seed, float mazeSize, float tileSize) {
+>>>>>>> Stashed changes
 		ArrayList<GameObject> Walls = new ArrayList<GameObject>();
 		String [] splitSeed = seed.split(",");
 		int count = 0;
@@ -120,11 +128,15 @@ public class computeLevel {
 					Walls.add(wall14r);
 					count ++;
 		            break;
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 		       /* case "15":
 =======
 		        case "15":
 >>>>>>> master
+=======
+		       /* case "15":
+>>>>>>> Stashed changes
 					Wall wall15o = new Wall(x*.5f, (y+tileSize/2)*.5f, true);  //Oben
 					Wall wall15l = new Wall((x-tileSize/2)*.5f, y*.5f, false); // links
 					Wall wall15u = new Wall(x*.5f, (y-tileSize/2)*.5f, true);  //Unten
@@ -134,11 +146,15 @@ public class computeLevel {
 					Walls.add(wall15u);
 					Walls.add(wall15r);
 					count ++;
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 		            break;*/
 =======
 		            break;
 >>>>>>> master
+=======
+		            break;*/
+>>>>>>> Stashed changes
 		        default:
 		        	System.out.println("default?");
 		            break;
