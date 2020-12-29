@@ -207,10 +207,10 @@ public class MainThread {
 		}
 		
 		//Malin Custom
-		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("9,9,1,3,10,6,2,2,8,4,6,2,14,4,4,6", mazeSize, tileSize);
+		ArrayList<GameObject> walls = ComputeLevel.drawWalls("12,12,4,6,10,3,2,2,8,1,3,2,13,1,1,3", mazeSize, tileSize);
 		
 		//Julian Custom
-		ArrayList<GameObject> walls = ComputeLevel.drawWalls("13,6,4,6,10,2,2,2,10,1,3,2,9,1,1,3", mazeSize, tileSize);
+		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("13,6,4,6,10,2,2,2,10,1,3,2,9,1,1,3", mazeSize, tileSize);
 		
 		//Outer walls only
 		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("12,4,4,6,8,0,0,2,8,0,0,2,9,1,1,3", mazeSize, tileSize);
