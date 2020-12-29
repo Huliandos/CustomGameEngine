@@ -17,24 +17,28 @@ public class Wall extends GameObject{
 
 	@Override
 	public void drawGraphic() {
-		if(!vertical) {
-			glRotatef(90, 0f, 0f, 1f);
-		}
 		glBegin(GL_QUADS);
 		//glPushMatrix();
 
 			//glTranslatef(-offsetX, -offsetY, 0);
-<<<<<<< Updated upstream
-			//if(horizontal) glRotatef(90, 0, 0, 1);
-=======
 
->>>>>>> Stashed changes
-			glColor4f(.76f,.4f,0,0);
-			glVertex2f(posX - width/2 - offsetX, posY + height/2 - offsetY);
-			glVertex2f(posX + width/2 - offsetX, posY + height/2 - offsetY);
-			glVertex2f(posX + width/2 - offsetX, posY - height/2 - offsetY);
-			glVertex2f(posX - width/2 - offsetX, posY - height/2 - offsetY);
-			if(horizontal) glRotatef(90, 0, 0, 1);
+			if(vertical) {
+				glColor4f(.76f,.4f,0,0);
+				glVertex2f(posX - width/2 - offsetX, posY + height/2 - offsetY);
+				glVertex2f(posX + width/2 - offsetX, posY + height/2 - offsetY);
+				glVertex2f(posX + width/2 - offsetX, posY - height/2 - offsetY);
+				glVertex2f(posX - width/2 - offsetX, posY - height/2 - offsetY);
+			}
+			else {
+				//System.out.println("Rotating Wall");
+				//glRotatef(90, 90f, 90f, 1f);
+
+				glColor4f(.76f,.4f,0,0);
+				glVertex2f(posX - height/2 - offsetX, posY + width/2 - offsetY);
+				glVertex2f(posX + height/2 - offsetX, posY + width/2 - offsetY);
+				glVertex2f(posX + height/2 - offsetX, posY - width/2 - offsetY);
+				glVertex2f(posX - height/2 - offsetX, posY - width/2 - offsetY);
+			}
 			
 		//glPopMatrix();
 		glEnd();

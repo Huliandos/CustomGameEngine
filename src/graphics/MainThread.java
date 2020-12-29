@@ -16,11 +16,9 @@ import gameObjects.GameObject;
 import gameObjects.Player;
 import gameObjects.Tile;
 import gameObjects.Wall;
-<<<<<<< Updated upstream
-import levelBuild.computeLevel;
-=======
+
 import levelBuild.ComputeLevel;
->>>>>>> Stashed changes
+
 import networking.ClientJavaSocket;
 import networking.ServerJavaSocket;
 
@@ -203,72 +201,68 @@ public class MainThread {
 		float tileSize = .5f;
 		for(int y=0; y<mazeSize; y++) {
 			for(int x=0; x<mazeSize; x++) {
-				Tile tile = new Tile(x*.51f, y*.51f, tileSize, tileSize);
+				Tile tile = new Tile(x*.5f, y*.5f, tileSize*.98f, tileSize*.98f);
 				staticGameObjects.add(tile);
 			}
 		}
 		
-<<<<<<< Updated upstream
-		ArrayList<GameObject> walls = computeLevel.drawWalls("9,9,1,3,10,6,2,2,8,4,6,2,14,4,4,6", mazeSize, tileSize);
-=======
-		ArrayList<GameObject> walls = ComputeLevel.drawWalls("9,9,1,3,10,6,2,2,8,4,6,2,14,4,4,6", mazeSize, tileSize);
->>>>>>> Stashed changes
+		//Malin Custom
+		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("9,9,1,3,10,6,2,2,8,4,6,2,14,4,4,6", mazeSize, tileSize);
+		
+		//Julian Custom
+		ArrayList<GameObject> walls = ComputeLevel.drawWalls("13,6,4,6,10,2,2,2,10,1,3,2,9,1,1,3", mazeSize, tileSize);
+		
+		//Outer walls only
+		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("12,4,4,6,8,0,0,2,8,0,0,2,9,1,1,3", mazeSize, tileSize);
+		
 		for (GameObject wall : walls) {
 			staticGameObjects.add(wall);
 		}
 		
 		//w‰nde
-<<<<<<< Updated upstream
-			//Auﬂenw‰nde
-			/*Wall o = new Wall(0, 0, true);
-			Wall l = new Wall(.5f, .5f, false);
-			Wall r = new Wall(1, 1, true);
-			Wall u = new Wall(1.5f, 1.5f, false);
-=======
-			/*//Auﬂenw‰nde
-			Wall o = new Wall(0-tileSize/2, 0, true);
-			Wall l = new Wall(0-tileSize/2, 0, false);
-			Wall r = new Wall(0+tileSize/2, 0, true);
-			Wall u = new Wall(0-tileSize/2, 0, false);
->>>>>>> Stashed changes
-			staticGameObjects.add(o);
-			staticGameObjects.add(l);
-			staticGameObjects.add(r);
-			staticGameObjects.add(u);
-			
-			//Innenw‰nde
-			for(int y=0; y<mazeSize; y++) {
-				for(int x=0; x<mazeSize; x++) {
-					double random = Math.random();
-					if(random < 0.1) {
-						Wall wall = new Wall(x*.5f, (y+tileSize/2)*.5f, true);  //Oben
-						staticGameObjects.add(wall);
-					}
-					else if(random < 0.2 && random >= 0.1) {
-						Wall wall = new Wall((x+tileSize/2)*.5f, y*.5f, false); // rechts
-						staticGameObjects.add(wall);
-					}
-					else if(random < 0.3 && random >=0.2) {
-						Wall wall = new Wall((x-tileSize/2)*.5f, y*.5f, false); // links
-						staticGameObjects.add(wall);
-					}
-					if(random < 0.4 && random >= 0.3) {
-						Wall wall = new Wall(x*.5f, (y-tileSize/2)*.5f, true); // unten
-						staticGameObjects.add(wall);
-					}
+		/*//Auﬂenw‰nde
+		Wall o = new Wall(0-tileSize/2, 0, true);
+		Wall l = new Wall(0-tileSize/2, 0, false);
+		Wall r = new Wall(0+tileSize/2, 0, true);
+		Wall u = new Wall(0-tileSize/2, 0, false);
+		staticGameObjects.add(o);
+		staticGameObjects.add(l);
+		staticGameObjects.add(r);
+		staticGameObjects.add(u);
+		
+		//Innenw‰nde
+		for(int y=0; y<mazeSize; y++) {
+			for(int x=0; x<mazeSize; x++) {
+				double random = Math.random();
+				if(random < 0.1) {
+					Wall wall = new Wall(x*.5f, (y+tileSize/2)*.5f, true);  //Oben
+					staticGameObjects.add(wall);
 				}
-			}*/
+				else if(random < 0.2 && random >= 0.1) {
+					Wall wall = new Wall((x+tileSize/2)*.5f, y*.5f, false); // rechts
+					staticGameObjects.add(wall);
+				}
+				else if(random < 0.3 && random >=0.2) {
+					Wall wall = new Wall((x-tileSize/2)*.5f, y*.5f, false); // links
+					staticGameObjects.add(wall);
+				}
+				if(random < 0.4 && random >= 0.3) {
+					Wall wall = new Wall(x*.5f, (y-tileSize/2)*.5f, true); // unten
+					staticGameObjects.add(wall);
+				}
+			}
+		}*/
 		
 		
 		//power ups
 		
 		//dynamic objects
-		//loop through num of connected players within network
 
 		//add local player
 		Player player = new Player(0, 0, clientJavaSocket.getLocalPlayerNum(), true);
 		dynamicGameObjects.add(player);
 
+		//loop through num of connected players within network
 		for (int i=0; i<clientJavaSocket.getTotalPlayerNum(); i++) {
 			if(i != clientJavaSocket.getLocalPlayerNum()) {
 				player = new Player(0, 0, i, false);

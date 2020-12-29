@@ -4,29 +4,18 @@ import java.util.ArrayList;
 import gameObjects.GameObject;
 import gameObjects.Wall;
 
-<<<<<<< Updated upstream
-public class computeLevel {
-
-	
-	
-<<<<<<< HEAD
-	public static ArrayList<GameObject> drawWalls(String seed, float mazeSize, float tileSize) {
-=======
-	public ArrayList<GameObject> drawWalls(String seed, float mazeSize, float tileSize) {
->>>>>>> master
-=======
 public class ComputeLevel {
 
 	
 	
 	public static ArrayList<GameObject> drawWalls(String seed, float mazeSize, float tileSize) {
->>>>>>> Stashed changes
 		ArrayList<GameObject> Walls = new ArrayList<GameObject>();
 		String [] splitSeed = seed.split(",");
 		int count = 0;
 		for(int y=0; y<mazeSize; y++) {
 			for(int x=0; x<mazeSize; x++) {
 				
+				/*
 			    switch (splitSeed[count]) {
 		        case "0":
 		            break;
@@ -127,38 +116,47 @@ public class ComputeLevel {
 					Walls.add(wall14u);
 					Walls.add(wall14r);
 					count ++;
+		        	System.out.println("ComputeLevel: 14");
 		            break;
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-		       /* case "15":
-=======
-		        case "15":
->>>>>>> master
-=======
-		       /* case "15":
->>>>>>> Stashed changes
-					Wall wall15o = new Wall(x*.5f, (y+tileSize/2)*.5f, true);  //Oben
-					Wall wall15l = new Wall((x-tileSize/2)*.5f, y*.5f, false); // links
-					Wall wall15u = new Wall(x*.5f, (y-tileSize/2)*.5f, true);  //Unten
-					Wall wall15r = new Wall((x+tileSize/2)*.5f, y*.5f, false); //Rechts
-					Walls.add(wall15o);
-					Walls.add(wall15l);
-					Walls.add(wall15u);
-					Walls.add(wall15r);
-					count ++;
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-		            break;*/
-=======
-		            break;
->>>>>>> master
-=======
-		            break;*/
->>>>>>> Stashed changes
+	        	//case "15":
+				//	Wall wall15o = new Wall(x*.5f, (y+tileSize/2)*.5f, true);  //Oben
+				//	Wall wall15l = new Wall((x-tileSize/2)*.5f, y*.5f, false); // links
+				//	Wall wall15u = new Wall(x*.5f, (y-tileSize/2)*.5f, true);  //Unten
+				//	Wall wall15r = new Wall((x+tileSize/2)*.5f, y*.5f, false); //Rechts
+				//	Walls.add(wall15o);
+				//	Walls.add(wall15l);
+				//	Walls.add(wall15u);
+				//	Walls.add(wall15r);
+				//	count ++;
+		        //    break;
 		        default:
-		        	System.out.println("default?");
+		        	System.out.println("ComputeLevel: default?");
 		            break;
 			    }
+			    */
+			    
+			    int seedValue = Integer.valueOf(splitSeed[(int) (y * mazeSize + x)]);
+			    
+			    if(seedValue / 8 == 1)	{	//4th bit == 1 --> left
+			    	Wall wall = new Wall(x*.5f-tileSize/2, y*.5f, true);
+			    	Walls.add(wall);
+			    	seedValue -= 8;
+				}
+				if(seedValue / 4 == 1)	{	//3th bit == 1 --> bottom
+					Wall wall = new Wall(x*.5f, y*.5f-tileSize/2, false); 
+			    	Walls.add(wall);
+					seedValue -= 4;
+				}
+				if(seedValue / 2 == 1)	{	//2th bit == 1 --> right
+					Wall wall = new Wall(x*.5f+tileSize/2, y*.5f, true);
+			    	Walls.add(wall);
+					seedValue -= 2;
+				}
+				if(seedValue / 1 == 1)	{	//1th bit == 1 --> top
+					Wall wall = new Wall(x*.5f, y*.5f+tileSize/2, false); 
+			    	Walls.add(wall);
+					seedValue -= 1;
+				}
 			}
 		}
 		return Walls;
