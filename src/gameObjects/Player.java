@@ -12,6 +12,8 @@ public class Player extends GameObject{
 	int playerNum;	//delete it this isn't used later
 	boolean localPlayer;
 	
+	int viewDirection = 0; //0 = top, 1 = top-right, 2 = right, 3 = bottom-right, 4 = bottom, 5 = bottom-left, 6 = left, 7 = top-left
+	
 	float r, g, b;
 	
 	public Player(float posX, float posY, int playerNum, boolean localPlayer) {
@@ -117,4 +119,12 @@ public class Player extends GameObject{
 	public void modifyMovementSpeed(float modifier) {
 		movementSpeed *= modifier;
 	}
+	
+	public void setViewDirection(int dir) {
+		viewDirection = dir;
+	} 
+	
+	public int getViewDirection() {
+		return viewDirection;
+	} 
 }

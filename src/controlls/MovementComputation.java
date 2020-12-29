@@ -6,8 +6,10 @@ import static org.lwjgl.opengl.GL11.GL_TRUE;
 import java.util.ArrayList;
 import java.util.Random;
 
+import gameObjects.Bullet;
 import gameObjects.GameObject;
 import gameObjects.Player;
+import graphics.MainThread;
 
 public class MovementComputation implements Runnable{
 	ArrayList<GameObject> dynamicGameObjects;
@@ -22,6 +24,10 @@ public class MovementComputation implements Runnable{
 	int[] playerInputCodes = new int[6];
 	
 	Object TOKEN;
+	
+	//shot cooldown
+	double shotCooldown = .5f;
+	double timeStampLastShot = 0;
 	
 	public MovementComputation(ArrayList<GameObject> dynamicGameObjects, ArrayList<GameObject> staticGameObjects, long window, Object TOKEN) {
 		this.dynamicGameObjects = dynamicGameObjects;
@@ -105,14 +111,24 @@ public class MovementComputation implements Runnable{
 			x *= 2;
 			y *= 2;
 
-			playerInputCode += 16;	//fith bit
+			playerInputCode += 16;	//fifth bit
 		}
 		
 		if(glfwGetKey(window, GLFW_KEY_SPACE) == GL_TRUE) {
 			//shoot
-			System.out.println("pew");
-
-			playerInputCode += 32;	//sixth bit
+			if(MainThread.getTime() > timeStampLastShot + shotCooldown) {	//shoot if shooting cd has passed
+				System.out.println("pew");
+				//MainThread.spawnBullet(player.getXPosition(), player.getYPosition(), player.getPlayerNum(), x, y);
+				
+				Bullet bullet = new Bullet(player.getXPosition(), player.getYPosition(), player.getPlayerNum(), player.getViewDirection());
+				synchronized(dynamicGameObjects) {
+					dynamicGameObjects.add(bullet);
+				}
+				
+				playerInputCode += 32;	//sixth bit
+				
+				timeStampLastShot = MainThread.getTime();
+			}
 		}
 		
 		player.move(x, y);
@@ -127,10 +143,11 @@ public class MovementComputation implements Runnable{
 	public void applyInputCode(Player player, int inputCode) {
 		float x = 0, y = 0;
 		float moveSpeed = player.getMovementSpeed();
-		boolean sprint = false;
+		boolean sprint = false, spawnBullet = false;
 		
 		if(inputCode / 32 == 1)	{	//6th bit == 1 --> shoot
 			System.out.println("pew");
+			spawnBullet = true;
 			inputCode -= 32;
 		}
 		if(inputCode / 16 == 1)	{	//5th bit == 1 --> sprint
@@ -169,6 +186,15 @@ public class MovementComputation implements Runnable{
 			y *= 2;
 		}
 		
+		if(spawnBullet) {
+			//MainThread.spawnBullet(player.getXPosition(), player.getYPosition(), player.getPlayerNum(), player.getViewDirection());
+
+			Bullet bullet = new Bullet(player.getXPosition(), player.getYPosition(), player.getPlayerNum(), player.getViewDirection());
+			synchronized(dynamicGameObjects) {
+				dynamicGameObjects.add(bullet);
+			}
+		}
+		
 		player.move(x, y);
 		setObjectAngle(player, x, y);
 	}
@@ -184,6 +210,10 @@ public class MovementComputation implements Runnable{
 			else if(go.getClass() == Player.class) {	//networked players
 				go.setOffset(offsetX, offsetY);
 				applyInputCode((Player)go, playerInputCodes[((Player)go).getPlayerNum()]);
+			}
+			else if(go.getClass() == Bullet.class) {	//Bullets
+				go.setOffset(offsetX, offsetY);
+				((Bullet)go).move();
 			}
 			else{	//zombies
 				go.setOffset(offsetX, offsetY);
@@ -208,27 +238,43 @@ public class MovementComputation implements Runnable{
 	void setObjectAngle(GameObject go, float x, float y) {
 		if(x==0 && y>0) {	//top
 			go.setAngle(0);
+			
+			if(go.getClass() == Player.class) ((Player)go).setViewDirection(0);
 		}
 		if(x<0 && y>0) {	//top left
 			go.setAngle(45);
+			
+			if(go.getClass() == Player.class) ((Player)go).setViewDirection(7);
 		}
 		if(x<0 && y==0) {	//left
 			go.setAngle(90);
+			
+			if(go.getClass() == Player.class) ((Player)go).setViewDirection(6);
 		}
 		if(x<0 && y<0) {	//bottom left
 			go.setAngle(135);
+			
+			if(go.getClass() == Player.class) ((Player)go).setViewDirection(5);
 		}
 		if(x==0 && y<0) {	//bottom
 			go.setAngle(180);
+			
+			if(go.getClass() == Player.class) ((Player)go).setViewDirection(4);
 		}
 		if(x>0 && y<0) {	//bottom right
 			go.setAngle(-135);
+			
+			if(go.getClass() == Player.class) ((Player)go).setViewDirection(3);
 		}
 		if(x>0 && y==0) {	//right
 			go.setAngle(-90);
+			
+			if(go.getClass() == Player.class) ((Player)go).setViewDirection(2);
 		}
 		if(x>0 && y>0) {	//top right
 			go.setAngle(-45);
+			
+			if(go.getClass() == Player.class) ((Player)go).setViewDirection(1);
 		}
 	}
 	

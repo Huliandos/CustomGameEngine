@@ -11,7 +11,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 import controlls.MovementComputation;
-
+import gameObjects.Bullet;
 import gameObjects.GameObject;
 import gameObjects.Player;
 import gameObjects.Tile;
@@ -326,8 +326,11 @@ public class MainThread {
 					go.drawGraphic();
 				}
 
-				for (GameObject go : dynamicGameObjects) {
-					go.drawGraphic();
+
+				synchronized(dynamicGameObjects) {
+					for (GameObject go : dynamicGameObjects) {
+						go.drawGraphic();
+					}
 				}
 				
 				glfwSwapBuffers(window);
@@ -346,11 +349,19 @@ public class MainThread {
 	}
 	
 	//Utility methods
-	static double getTime() {
+	public static double getTime() {
 		return (double)System.nanoTime() / (double)1000000000L;	// number is 1 billion --> casts nano time to seconds
 	}
 	
 	public static MovementComputation getMoveComp(){
 		return moveComp;
+	}
+	
+	public static void spawnBullet(float posX, float posY, int playerNumber, int viewDirection) {
+
+		Bullet bullet = new Bullet(posX, posY, playerNumber, viewDirection);
+		synchronized(dynamicGameObjects) {
+			dynamicGameObjects.add(bullet);
+		}
 	}
 }
