@@ -54,6 +54,10 @@ public class MainThread {
 	
 	//display text
 	
+	//Level Generation variables
+	static String levelSeed = "";
+	static int levelSize = 8;
+	
 	//game controlling variables
 	public static boolean startGame = false;
 	
@@ -200,21 +204,21 @@ public class MainThread {
 		////static objects\\\\
 		
 		///tiles\\\
-		int mazeSize = 4;
 		float tileSize = .5f;
-		for(int y=0; y<mazeSize; y++) {
-			for(int x=0; x<mazeSize; x++) {
+		for(int y=0; y<levelSize; y++) {
+			for(int x=0; x<levelSize; x++) {
 				Tile tile = new Tile(x*.5f, y*.5f, tileSize*.98f, tileSize*.98f);
 				staticGameObjects.add(tile);
 			}
 		}
 		
 		///walls\\\
-		String seed = BuildLevel.generateLevel(mazeSize);
-		System.out.print(seed);
+		//String seed = BuildLevel.generateLevel(levelSize);
+		//System.out.print(seed);
+		//ArrayList<GameObject> walls = ComputeLevel.drawWalls(seed, levelSize, tileSize);
 		
 		//Generated walls
-		ArrayList<GameObject> walls = ComputeLevel.drawWalls(seed, mazeSize, tileSize);
+		ArrayList<GameObject> walls = ComputeLevel.drawWalls(levelSeed, levelSize, tileSize);
 		
 		//Malin Custom
 		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("12,12,4,6,10,3,2,2,8,1,3,2,13,1,1,3", mazeSize, tileSize);
@@ -351,5 +355,13 @@ public class MainThread {
 		synchronized(dynamicGameObjects) {
 			dynamicGameObjects.add(bullet);
 		}
+	}
+	
+	public static void setLevelSeed(String sendLevelSeed){
+		levelSeed = sendLevelSeed;
+	}
+	
+	public static int getLevelSize() {
+		return levelSize;
 	}
 }

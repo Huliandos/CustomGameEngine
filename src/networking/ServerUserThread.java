@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import graphics.MainThread;
+import levelBuild.BuildLevel;
 
 public class ServerUserThread implements Runnable {
 	Socket socket;
@@ -39,6 +40,7 @@ public class ServerUserThread implements Runnable {
 	@Override
 	public void run() {
 		if(hostThread) {	//host sends init data to every client
+			String levelSeed = BuildLevel.generateLevel(MainThread.getLevelSize());
 			try {
 				synchronized(START_GAME_TOKEN) {START_GAME_TOKEN.wait();}
 			} catch (InterruptedException e) {
@@ -53,6 +55,10 @@ public class ServerUserThread implements Runnable {
 			serverInputHandler.broadcastInput(String.valueOf(numOfUsersConnected), this);
 			//set num of users on local client
 			sendStartGame(String.valueOf(numOfUsersConnected));
+			
+			//Send level seed
+			serverInputHandler.broadcastInput(levelSeed, this);
+			sendStartGame(levelSeed);
 		}
 		//client can start listening instantaneously
 		

@@ -45,6 +45,12 @@ public class ClientReadThread extends Thread {
             
             clientJavaSocket.setTotalPlayerNum(Integer.valueOf(totalPlayerNum));	//charAt is just a hotfix cause of the bug above. Find a way to properly manage the issue
             
+            //get level seed
+            String levelSeed = in.readLine();
+            System.out.println("Client Read Thread: " + levelSeed);
+            
+            MainThread.setLevelSeed(levelSeed);
+            
             //at this point the game has started, so start input writing
             cwt.start();
             
