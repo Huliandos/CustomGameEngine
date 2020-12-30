@@ -197,8 +197,9 @@ public class MainThread {
 	}
 	
 	static void initObjects() {
-		//static objects
-		//tiles
+		////static objects\\\\
+		
+		///tiles\\\
 		int mazeSize = 4;
 		float tileSize = .5f;
 		for(int y=0; y<mazeSize; y++) {
@@ -208,6 +209,7 @@ public class MainThread {
 			}
 		}
 		
+		///walls\\\
 		String seed = BuildLevel.generateLevel(mazeSize);
 		System.out.print(seed);
 		
@@ -227,45 +229,13 @@ public class MainThread {
 			staticGameObjects.add(wall);
 		}
 		
-		//wände
-		/*//Außenwände
-		Wall o = new Wall(0-tileSize/2, 0, true);
-		Wall l = new Wall(0-tileSize/2, 0, false);
-		Wall r = new Wall(0+tileSize/2, 0, true);
-		Wall u = new Wall(0-tileSize/2, 0, false);
-		staticGameObjects.add(o);
-		staticGameObjects.add(l);
-		staticGameObjects.add(r);
-		staticGameObjects.add(u);
-		
-		//Innenwände
-		for(int y=0; y<mazeSize; y++) {
-			for(int x=0; x<mazeSize; x++) {
-				double random = Math.random();
-				if(random < 0.1) {
-					Wall wall = new Wall(x*.5f, (y+tileSize/2)*.5f, true);  //Oben
-					staticGameObjects.add(wall);
-				}
-				else if(random < 0.2 && random >= 0.1) {
-					Wall wall = new Wall((x+tileSize/2)*.5f, y*.5f, false); // rechts
-					staticGameObjects.add(wall);
-				}
-				else if(random < 0.3 && random >=0.2) {
-					Wall wall = new Wall((x-tileSize/2)*.5f, y*.5f, false); // links
-					staticGameObjects.add(wall);
-				}
-				if(random < 0.4 && random >= 0.3) {
-					Wall wall = new Wall(x*.5f, (y-tileSize/2)*.5f, true); // unten
-					staticGameObjects.add(wall);
-				}
-			}
-		}*/
+		////power ups\\\\
 		
 		
-		//power ups
 		
-		//dynamic objects
+		////dynamic objects\\\\
 
+		///players\\\
 		//add local player
 		Player player = new Player(0, 0, clientJavaSocket.getLocalPlayerNum(), true);
 		dynamicGameObjects.add(player);
@@ -277,6 +247,9 @@ public class MainThread {
 				dynamicGameObjects.add(player);
 			}
 		}
+		
+		///zombies\\
+		
 	}
 	
 	static void initMovementComputation(){
