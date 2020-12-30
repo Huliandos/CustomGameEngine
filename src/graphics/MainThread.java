@@ -3,6 +3,7 @@ package graphics;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -18,6 +19,7 @@ import gameObjects.Tile;
 import gameObjects.Wall;
 
 import levelBuild.ComputeLevel;
+import levelBuild.BuildLevel;
 
 import networking.ClientJavaSocket;
 import networking.ServerJavaSocket;
@@ -197,7 +199,7 @@ public class MainThread {
 	static void initObjects() {
 		//static objects
 		//tiles
-		float mazeSize = 4;
+		int mazeSize = 4;
 		float tileSize = .5f;
 		for(int y=0; y<mazeSize; y++) {
 			for(int x=0; x<mazeSize; x++) {
@@ -206,8 +208,14 @@ public class MainThread {
 			}
 		}
 		
+		String seed = BuildLevel.generateLevel(mazeSize);
+		System.out.print(seed);
+		
+		//Generated walls
+		ArrayList<GameObject> walls = ComputeLevel.drawWalls(seed, mazeSize, tileSize);
+		
 		//Malin Custom
-		ArrayList<GameObject> walls = ComputeLevel.drawWalls("12,12,4,6,10,3,2,2,8,1,3,2,13,1,1,3", mazeSize, tileSize);
+		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("12,12,4,6,10,3,2,2,8,1,3,2,13,1,1,3", mazeSize, tileSize);
 		
 		//Julian Custom
 		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("13,6,4,6,10,2,2,2,10,1,3,2,9,1,1,3", mazeSize, tileSize);
@@ -342,7 +350,14 @@ public class MainThread {
 	}
 	
 	//doesn't work?
-	static void shutdown() {
+	public static void shutdown() {
+		try {
+			serverJavaSocket.serverSocket.close();
+			System.out.println("Socket closed");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if(serverJavaSocket != null) sjsThread.interrupt();
 		
 		moveCompThread.interrupt();

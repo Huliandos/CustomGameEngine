@@ -136,6 +136,7 @@ public class MovementComputation implements Runnable{
 
 		if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GL_TRUE) {
 			//moveCompThread.stop();
+			MainThread.shutdown();
 			glfwSetWindowShouldClose(window, true);
 		}
 	}

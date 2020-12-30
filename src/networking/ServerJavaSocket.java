@@ -13,6 +13,8 @@ public class ServerJavaSocket implements Runnable  {
 	
 	Object START_GAME_TOKEN;
 	
+	public ServerSocket serverSocket;
+	
 	public ServerJavaSocket(int port, String userName, long window, Object START_GAME_TOKEN) {
 		this.port = port;
 		this.window = window;
@@ -22,13 +24,14 @@ public class ServerJavaSocket implements Runnable  {
 	@Override
 	public void run() {
 		try {
-			ServerSocket serverSocket = new ServerSocket(port);
+			serverSocket = new ServerSocket(port);
 			
 			ServerInputHandler serverInputHandler = new ServerInputHandler(START_GAME_TOKEN);
 			
 			while(!glfwWindowShouldClose(window)) {
 				try {
 					Socket socket = serverSocket.accept();
+					
 					
 					serverInputHandler.addSocket(socket);
 					
