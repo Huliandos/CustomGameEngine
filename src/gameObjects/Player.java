@@ -2,6 +2,9 @@ package gameObjects;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import collision.CircleCollider;
+import collision.Collider;
+
 public class Player extends GameObject{
 	
 	float movementSpeed = .005f;
@@ -15,6 +18,8 @@ public class Player extends GameObject{
 	int viewDirection = 0; //0 = top, 1 = top-right, 2 = right, 3 = bottom-right, 4 = bottom, 5 = bottom-left, 6 = left, 7 = top-left
 	
 	float r, g, b;
+	
+	Collider collider;
 	
 	public Player(float posX, float posY, int playerNum, boolean localPlayer) {
 		this.posX = posX;
@@ -53,6 +58,8 @@ public class Player extends GameObject{
 			g = .8f;
 			b = .8f;
 		}
+		
+		collider = new CircleCollider(playerSize);
 	}
 
 	//The Player is always centered. His position gets added as offset to all other GameObjects
@@ -126,5 +133,10 @@ public class Player extends GameObject{
 	
 	public int getViewDirection() {
 		return viewDirection;
+	}
+
+	@Override
+	public Collider getCollider() {
+		return collider;
 	} 
 }

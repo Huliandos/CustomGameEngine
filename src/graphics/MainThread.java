@@ -218,7 +218,7 @@ public class MainThread {
 		//ArrayList<GameObject> walls = ComputeLevel.drawWalls(seed, levelSize, tileSize);
 		
 		//Generated walls
-		ArrayList<GameObject> walls = ComputeLevel.drawWalls(levelSeed, levelSize, tileSize);
+		ArrayList<GameObject> walls = ComputeLevel.drawWalls(levelSeed, levelSize, tileSize, staticGameObjects);
 		
 		//Malin Custom
 		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("12,12,4,6,10,3,2,2,8,1,3,2,13,1,1,3", mazeSize, tileSize);
@@ -350,10 +350,15 @@ public class MainThread {
 	}
 	
 	public static void spawnBullet(float posX, float posY, int playerNumber, int viewDirection) {
-
 		Bullet bullet = new Bullet(posX, posY, playerNumber, viewDirection);
 		synchronized(dynamicGameObjects) {
 			dynamicGameObjects.add(bullet);
+		}
+	}
+	
+	public static void destroyBullet(GameObject bullet) {
+		synchronized(dynamicGameObjects) {
+			dynamicGameObjects.remove(bullet);
 		}
 	}
 	
@@ -363,5 +368,9 @@ public class MainThread {
 	
 	public static int getLevelSize() {
 		return levelSize;
+	}
+	
+	public static boolean isLocalClientServer() {
+		return server;
 	}
 }

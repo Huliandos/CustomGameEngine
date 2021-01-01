@@ -43,6 +43,7 @@ public class ClientWriteThread extends Thread{
     public void run() {
     	//System.out.println("Client Write Thread started");
     	
+    	//ToDo: If client is server, then send player death
         while(!glfwWindowShouldClose(window)) {
         	if(MainThread.getMoveComp() != null) {
 	        	int inputCode = MainThread.getMoveComp().getPlayerInputCode();	//fetch local Input code

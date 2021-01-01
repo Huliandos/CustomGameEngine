@@ -4,6 +4,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.Random;
 
+import collision.Collider;
+
 public class MovingBlock extends GameObject{
 	float randR, randG, randB;
 	
@@ -26,5 +28,11 @@ public class MovingBlock extends GameObject{
 			glVertex2f(.1f+posX-offsetX, -.2f+posY-offsetY);
 			glVertex2f(.1f+posX-offsetX, .2f+posY-offsetY);
 		glEnd();
+	}
+
+	@Override
+	public Collider getCollider() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

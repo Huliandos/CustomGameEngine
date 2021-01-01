@@ -2,6 +2,9 @@ package gameObjects;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import collision.CircleCollider;
+import collision.Collider;
+
 public class Bullet extends GameObject{
 	
 	float movementSpeed = .05f;
@@ -14,6 +17,8 @@ public class Bullet extends GameObject{
 	int playerNum;
 	
 	float r, g, b;
+	
+	Collider collider;
 	
 	public Bullet(float posX, float posY, int playerNum, int shooterDir) {
 		this.posX = posX;
@@ -53,6 +58,8 @@ public class Bullet extends GameObject{
 		}
 		
 		this.shooterDir = shooterDir;
+		
+		collider = new CircleCollider(bulletSize);
 	}
 
 	//The Player is always centered. His position gets added as offset to all other GameObjects
@@ -151,4 +158,9 @@ public class Bullet extends GameObject{
 			posY += movementSpeed * factor;
 		}
 	}
+	
+	@Override
+	public Collider getCollider() {
+		return collider;
+	} 
 }

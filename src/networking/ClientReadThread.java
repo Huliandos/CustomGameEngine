@@ -47,7 +47,7 @@ public class ClientReadThread extends Thread {
             
             //get level seed
             String levelSeed = in.readLine();
-            System.out.println("Client Read Thread: " + levelSeed);
+            //System.out.println("Client Read Thread: " + levelSeed);
             
             MainThread.setLevelSeed(levelSeed);
             
@@ -57,6 +57,10 @@ public class ClientReadThread extends Thread {
             while (!glfwWindowShouldClose(window)) {
                 String[] response = in.readLine().split(" ");
 
+                //ToDo: differentiate between different message types
+                //1: player input
+                //2: player and bullet collision
+                
                 //extract data out of send string
                 int playerNum = Integer.valueOf(response[0]);
                 int inputCode = Integer.valueOf(response[1]);

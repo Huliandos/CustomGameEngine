@@ -1,5 +1,7 @@
 package gameObjects;
 
+import collision.Collider;
+
 public abstract class GameObject {
 	float posX, offsetX;
 	float posY, offsetY;
@@ -7,6 +9,8 @@ public abstract class GameObject {
 	float angle = 0f;
 	
 	public abstract void drawGraphic(); //How to Draw Graphic in here
+	
+	public abstract Collider getCollider();
 	
 	public void setPosition(float x, float y) {
 		posX = x;

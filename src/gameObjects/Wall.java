@@ -2,17 +2,23 @@ package gameObjects;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class Wall extends GameObject{
+import collision.Collider;
+import collision.RectangleCollider;
 
-	
+public class Wall extends GameObject{
 	float width =.025f;
 	float height = .5f;
 	boolean vertical;
 
+	Collider collider;
+	
 	public Wall(float posX, float posY, boolean vertical) {
 		this.posX = posX;
 		this.posY = posY;
 		this.vertical = vertical;
+		
+		if(vertical)	collider = new RectangleCollider(width, height);
+		else			collider = new RectangleCollider(height, width);
 	}
 
 	@Override
@@ -42,5 +48,10 @@ public class Wall extends GameObject{
 			
 		//glPopMatrix();
 		glEnd();
+	}
+
+	@Override
+	public Collider getCollider() {
+		return collider;
 	}
 }
