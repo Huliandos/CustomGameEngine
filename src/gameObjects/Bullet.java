@@ -8,7 +8,7 @@ import collision.Collider;
 public class Bullet extends GameObject{
 	
 	float movementSpeed = .05f;
-	float bulletSize = .01f;
+	float bulletSize = .02f;
 	
 	int numOfCirclePoints = 45;
 	
@@ -58,8 +58,9 @@ public class Bullet extends GameObject{
 		}
 		
 		this.shooterDir = shooterDir;
-		
-		collider = new CircleCollider(bulletSize);
+
+		float diagonalBulletSize = (float) Math.sqrt(Math.pow(bulletSize/2, 2) + Math.pow(bulletSize/2, 2));
+		collider = new CircleCollider(diagonalBulletSize);
 	}
 
 	//The Player is always centered. His position gets added as offset to all other GameObjects
@@ -83,10 +84,10 @@ public class Bullet extends GameObject{
 					glRotatef (theta, 0, 0, 1);
 					
 					glBegin(GL_QUADS);
-						glVertex2f(-bulletSize, -bulletSize);
-						glVertex2f(-bulletSize, bulletSize);
-						glVertex2f(bulletSize, bulletSize);
-						glVertex2f(bulletSize, -bulletSize);
+						glVertex2f(-bulletSize/2, -bulletSize/2);
+						glVertex2f(-bulletSize/2, bulletSize/2);
+						glVertex2f(bulletSize/2, bulletSize/2);
+						glVertex2f(bulletSize/2, -bulletSize/2);
 				    glEnd();
 	
 				glPopMatrix();

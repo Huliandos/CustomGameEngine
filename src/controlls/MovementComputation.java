@@ -286,6 +286,15 @@ public class MovementComputation implements Runnable{
 			if(go==player) {	//local player
 				offsetX = player.getXPosition();
 				offsetY = player.getYPosition();
+				
+				for (GameObject player : dynamicGameObjects) {
+					//if all players have been checked then stop this loop
+					if(player.getClass() != Player.class) break;	
+					//don't collide with player that shot the bullet
+					else if(player != this.player && CollisionDetection.scanForCollision(go, player)){
+						System.out.println(go + " colliding with " + player);
+					}
+				}
 			}
 			else if(go.getClass() == Player.class) {	//networked players
 				go.setOffset(offsetX, offsetY);

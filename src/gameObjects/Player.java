@@ -8,7 +8,7 @@ import collision.Collider;
 public class Player extends GameObject{
 	
 	float movementSpeed = .005f;
-	float playerSize = .05f;
+	float playerSize = .1f;
 	
 	int numOfCirclePoints = 90;
 	
@@ -59,7 +59,9 @@ public class Player extends GameObject{
 			b = .8f;
 		}
 		
-		collider = new CircleCollider(playerSize);
+		
+		float diagonalPlayerSize = (float) Math.sqrt(Math.pow(playerSize/2, 2) + Math.pow(playerSize/2, 2));
+		collider = new CircleCollider(diagonalPlayerSize);
 	}
 
 	//The Player is always centered. His position gets added as offset to all other GameObjects
@@ -83,10 +85,10 @@ public class Player extends GameObject{
 					glRotatef (theta, 0, 0, 1);
 					
 					glBegin(GL_QUADS);
-						glVertex2f(-playerSize, -playerSize);
-						glVertex2f(-playerSize, playerSize);
-						glVertex2f(playerSize, playerSize);
-						glVertex2f(playerSize, -playerSize);
+						glVertex2f(-playerSize/2, -playerSize/2);
+						glVertex2f(-playerSize/2, playerSize/2);
+						glVertex2f(playerSize/2, playerSize/2);
+						glVertex2f(playerSize/2, -playerSize/2);
 				    glEnd();
 	
 				glPopMatrix();
@@ -95,7 +97,7 @@ public class Player extends GameObject{
 		    //draws player arms to show firing direction
 			glPushMatrix();
 			
-				glTranslatef((float)Math.sqrt(Math.pow(playerSize, 2) + Math.pow(playerSize, 2)), 0, 0);	//offset from body
+				glTranslatef((float)Math.sqrt(Math.pow(playerSize/2, 2) + Math.pow(playerSize/2, 2)), 0, 0);	//offset from body
 		
 				//glColor4f(0,0,0,0);
 			    glBegin(GL_QUADS);
