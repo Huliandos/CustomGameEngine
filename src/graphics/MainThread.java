@@ -7,11 +7,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
+import collision.QuadTree;
+
 import controlls.MovementComputation;
+
 import gameObjects.Bullet;
 import gameObjects.GameObject;
 import gameObjects.Player;
@@ -60,6 +62,9 @@ public class MainThread {
 	
 	//game controlling variables
 	public static boolean startGame = false;
+	
+	//Colliders
+	static QuadTree quadTree;
 	
 	
 	public static void main(String[] args) {	//args: bool for server, port, userName
@@ -202,16 +207,22 @@ public class MainThread {
 	
 	static void initObjects() {
 		////static objects\\\\
+
+		ArrayList<Tile> tiles = new ArrayList<Tile>();
 		
 		///tiles\\\
 		float tileSize = .5f;
 		for(int y=0; y<levelSize; y++) {
 			for(int x=0; x<levelSize; x++) {
 				Tile tile = new Tile(x*.5f, y*.5f, tileSize*.98f, tileSize*.98f);
-				staticGameObjects.add(tile);
+				tiles.add(tile);
 			}
 		}
 		
+		staticGameObjects.addAll(tiles);
+		
+		quadTree = new QuadTree(tiles, levelSize, tileSize, 0, levelSize*.5f - .5f, 0, levelSize*.5f - .5f);
+	
 		///walls\\\
 		//String seed = BuildLevel.generateLevel(levelSize);
 		//System.out.print(seed);
@@ -372,5 +383,9 @@ public class MainThread {
 	
 	public static boolean isLocalClientServer() {
 		return server;
+	}
+	
+	public static QuadTree getQuadTree() {
+		return quadTree;
 	}
 }
