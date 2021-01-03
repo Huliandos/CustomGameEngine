@@ -391,12 +391,25 @@ public class MovementComputation implements Runnable{
 				bulletDestroyed:{
 					
 					ArrayList<Tile> tiles = quadTree.getCollidingTiles(go);
-					//System.out.println("Colliding tiles: " + tiles.size());
+					if(tiles.size() == 0) {	//if bullet ist out of bounds
+						MainThread.destroyBullet(go);
+
+						//System.out.println(go + " destroyed");
+						break bulletDestroyed;
+					}
 					for (GameObject tile : tiles) {
 						//go through all walls of the tile
 						for (GameObject wall : ((Tile)tile).getWalls()) {
 							//if the player collides with a wall after applying movement
+							/*
 							if(CollisionDetection.scanForCollision(go, wall)) {
+								MainThread.destroyBullet(go);
+
+								//System.out.println(go + " destroyed");
+								break bulletDestroyed;
+							}
+							*/
+							if(CollisionDetection.scanForDynamicCollision(go, wall, ((Bullet)go).getMovementVectorX(), ((Bullet)go).getMovementVectorY())) {
 								MainThread.destroyBullet(go);
 
 								//System.out.println(go + " destroyed");

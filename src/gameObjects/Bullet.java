@@ -160,6 +160,94 @@ public class Bullet extends GameObject{
 		}
 	}
 	
+	public float getMovementVectorX() {
+		if(shooterDir == 0) {
+			return 0;
+		}
+		else if(shooterDir == 1) {
+			//secures that the bullet doesn't speed up diagonally
+			float magnitude = (float)Math.sqrt((float)Math.pow(movementSpeed, 2) + (float)Math.pow(movementSpeed, 2));
+			float factor = movementSpeed / magnitude;
+			
+			return movementSpeed * factor;
+		}
+		else if(shooterDir == 2) {
+			return movementSpeed;
+		}
+		else if(shooterDir == 3) {
+			//secures that the bullet doesn't speed up diagonally
+			float magnitude = (float)Math.sqrt((float)Math.pow(movementSpeed, 2) + (float)Math.pow(movementSpeed, 2));
+			float factor = movementSpeed / magnitude;
+			
+			return movementSpeed * factor;
+		}
+		else if(shooterDir == 4) {
+			return 0;
+		}
+		else if(shooterDir == 5) {
+			//secures that the bullet doesn't speed up diagonally
+			float magnitude = (float)Math.sqrt((float)Math.pow(movementSpeed, 2) + (float)Math.pow(movementSpeed, 2));
+			float factor = movementSpeed / magnitude;
+			
+			return -movementSpeed * factor;
+		}
+		else if(shooterDir == 6) {
+			return -movementSpeed;
+		}
+		else if(shooterDir == 7) {
+			//secures that the bullet doesn't speed up diagonally
+			float magnitude = (float)Math.sqrt((float)Math.pow(movementSpeed, 2) + (float)Math.pow(movementSpeed, 2));
+			float factor = movementSpeed / magnitude;
+			
+			return -movementSpeed * factor;
+		}
+		return 0;
+	}
+	
+	public float getMovementVectorY() {
+		if(shooterDir == 0) {
+			return movementSpeed;
+		}
+		else if(shooterDir == 1) {
+			//secures that the bullet doesn't speed up diagonally
+			float magnitude = (float)Math.sqrt((float)Math.pow(movementSpeed, 2) + (float)Math.pow(movementSpeed, 2));
+			float factor = movementSpeed / magnitude;
+			
+			return movementSpeed * factor;
+		}
+		else if(shooterDir == 2) {
+			return 0;
+		}
+		else if(shooterDir == 3) {
+			//secures that the bullet doesn't speed up diagonally
+			float magnitude = (float)Math.sqrt((float)Math.pow(movementSpeed, 2) + (float)Math.pow(movementSpeed, 2));
+			float factor = movementSpeed / magnitude;
+			
+			return -movementSpeed * factor;
+		}
+		else if(shooterDir == 4) {
+			return -movementSpeed;
+		}
+		else if(shooterDir == 5) {
+			//secures that the bullet doesn't speed up diagonally
+			float magnitude = (float)Math.sqrt((float)Math.pow(movementSpeed, 2) + (float)Math.pow(movementSpeed, 2));
+			float factor = movementSpeed / magnitude;
+			
+			return -movementSpeed * factor;
+		}
+		else if(shooterDir == 6) {
+			return 0;
+		}
+		else if(shooterDir == 7) {
+			//secures that the bullet doesn't speed up diagonally
+			float magnitude = (float)Math.sqrt((float)Math.pow(movementSpeed, 2) + (float)Math.pow(movementSpeed, 2));
+			float factor = movementSpeed / magnitude;
+			
+			return movementSpeed * factor;
+		}
+		return 0;
+	}
+	
 	@Override
 	public Collider getCollider() {
 		return collider;

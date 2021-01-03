@@ -54,4 +54,14 @@ public class Wall extends GameObject{
 	public Collider getCollider() {
 		return collider;
 	}
+	
+	public float getWidth() {
+		if (vertical) return width;
+		return height;
+	}
+	
+	public float getHeight() {
+		if (vertical) return height;
+		return width;
+	}
 }
