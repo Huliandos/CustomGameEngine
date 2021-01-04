@@ -391,10 +391,10 @@ public class MovementComputation implements Runnable{
 				bulletDestroyed:{
 					
 					ArrayList<Tile> tiles = quadTree.getCollidingTiles(go);
-					if(tiles.size() == 0) {	//if bullet ist out of bounds
+					if(tiles.size() == 0) {	//if bullet is out of bounds
 						MainThread.destroyBullet(go);
 
-						//System.out.println(go + " destroyed");
+						System.out.println("MovementComp: " + go + " out of bounds");
 						break bulletDestroyed;
 					}
 					for (GameObject tile : tiles) {
