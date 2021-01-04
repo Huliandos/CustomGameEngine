@@ -58,7 +58,7 @@ public class MainThread {
 	
 	//Level Generation variables
 	static String levelSeed = "";
-	static int levelSize = 7;	//8 is regular size
+	static int levelSize = 8;	//8 is regular size
 	
 	//game controlling variables
 	public static boolean startGame = false;
