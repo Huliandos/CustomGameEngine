@@ -15,7 +15,6 @@ public class QuadTree {
 	Collider collider;
 	
 	public QuadTree(ArrayList<Tile> tiles, int mazeSize, float tileSize, float lowestX, float highestX, float lowestY, float highestY) {
-		//System.out.println("-- Creating new QuadTree. Tile Size: " + tiles.size() + " --");
 		childTiles = tiles;
 		
 		this.posX = (highestX + lowestX) / 2;
@@ -27,7 +26,6 @@ public class QuadTree {
 			//This is a leaf Quad tree. Do nothing
 		}
 		else if(tiles.size() < 4) {	//if we reached the bottom layer of the QuadTree, for a quad not divisible by 4
-			//System.out.println("Reached leaf child");
 			//init children of QuadTree
 			
 			int childMazeSize = mazeSize / 2;
@@ -53,22 +51,6 @@ public class QuadTree {
 					BRChildTiles.add(tiles.get(i));
 			}
 			
-			/*
-			System.out.println("-- <4 --");
-			System.out.println("TL child size: " + TLChildTiles.size() + " TR child size: " + TRChildTiles.size() + " BL child size: " + BLChildTiles.size() + " BR child size: " + BRChildTiles.size());
-			if(TLChildTiles.size() >= 1)
-				System.out.println("TL lowest X: " + TLChildTiles.get(0).getXPosition() + " highest X " + TLChildTiles.get(0).getXPosition() 
-						+ " lowest Y " + TLChildTiles.get(0).getYPosition() + " highest Y" + TLChildTiles.get(0).getYPosition());
-			if(TRChildTiles.size() >= 1)
-				System.out.println("TR lowest X: " + TRChildTiles.get(0).getXPosition() + " highest X " + TRChildTiles.get(0).getXPosition() 
-						+ " lowest Y " + TRChildTiles.get(0).getYPosition() + " highest Y" + TRChildTiles.get(0).getYPosition());
-			if(BLChildTiles.size() >= 1)
-				System.out.println("BL lowest X: " + BLChildTiles.get(0).getXPosition() + " highest X " + BLChildTiles.get(0).getXPosition() 
-						+ " lowest Y " + BLChildTiles.get(0).getYPosition() + " highest Y" + BLChildTiles.get(0).getYPosition());
-			if(BRChildTiles.size() >= 1)
-				System.out.println("BR lowest X: " + BRChildTiles.get(0).getXPosition() + " highest X " + BRChildTiles.get(0).getXPosition() 
-						+ " lowest Y " + BRChildTiles.get(0).getYPosition() + " highest Y" + BRChildTiles.get(0).getYPosition());
-			*/
 			
 			if(TLChildTiles.size() >= 1)
 				TLChild = new QuadTree(TLChildTiles, childMazeSize, tileSize, 
@@ -85,7 +67,6 @@ public class QuadTree {
 
 		}
 		else if(tiles.size() == 4) {	//if we reached the bottom layer of the QuadTree
-			//System.out.println("Reached leaf child");
 			//init children of QuadTree
 			
 			//int childMazeSize = mazeSize / 2;
@@ -110,22 +91,6 @@ public class QuadTree {
 					BRChildTiles.add(tiles.get(i));
 			}
 			
-			/*
-			System.out.println("-- ==4 --");
-			System.out.println("mazeSize: " + mazeSize + "X: " + lowestX + " - " + highestX + " Y: " + lowestY + " - " + highestY);
-			for (Tile tile : tiles) System.out.print(" Tile pos X: " + tile.getXPosition() + " Tile pos y: " + tile.getYPosition());
-			
-			System.out.println("TL child size: " + TLChildTiles.size() + " TR child size: " + TRChildTiles.size() + " BL child size: " + BLChildTiles.size() + " BR child size: " + BRChildTiles.size());
-			System.out.println("TL lowest X: " + TLChildTiles.get(0).getXPosition() + " highest X " + TLChildTiles.get(0).getXPosition() 
-					+ " lowest Y " + TLChildTiles.get(0).getYPosition() + " highest Y" + TLChildTiles.get(0).getYPosition());
-			System.out.println("TR lowest X: " + TRChildTiles.get(0).getXPosition() + " TR highest X " + TRChildTiles.get(0).getXPosition() 
-					+ " lowest Y " + TRChildTiles.get(0).getYPosition() + " highest Y" + TRChildTiles.get(0).getYPosition());
-			System.out.println("BL lowest X: " + BLChildTiles.get(0).getXPosition() + " highest X " + BLChildTiles.get(0).getXPosition() 
-					+ " lowest Y " + BLChildTiles.get(0).getYPosition() + " highest Y" + BLChildTiles.get(0).getYPosition());
-			System.out.println("BR lowest X: " + BRChildTiles.get(0).getXPosition() + " highest X " + BRChildTiles.get(0).getXPosition() 
-					+ " lowest Y " + BRChildTiles.get(0).getYPosition() + " highest Y" + BRChildTiles.get(0).getYPosition());
-			*/
-			
 			TLChild = new QuadTree(TLChildTiles, childMazeSize, tileSize, 
 					TLChildTiles.get(0).getXPosition(), TLChildTiles.get(0).getXPosition(), TLChildTiles.get(0).getYPosition(), TLChildTiles.get(0).getYPosition());
 			TRChild = new QuadTree(TRChildTiles, childMazeSize, tileSize, 
@@ -137,8 +102,6 @@ public class QuadTree {
 
 		}
 		else if(tiles.size() % 4 == 0) {	//if the number of tiles is a multiple of 4
-			//System.out.println("QuadTree: creating Quadtree. Lowest X: " + lowestX + " highestX " + highestX + " Lowest Y:"  + lowestY + " highestY " + highestY);
-			//System.out.println("QuadTree: tiles: " + tiles.size());
 			//collider = new RectangleCollider(highestX - lowestX, highestY - lowestY);
 			
 			//init children of QuadTree
@@ -186,16 +149,10 @@ public class QuadTree {
 			
 			//System.out.println("BR lowest X: " + values[0] + " BR highest X " + values[1] + " BR lowest Y " + values[2] + " BR highest Y" + values[3]);
 			BRChild = new QuadTree(BRChildTiles, childMazeSize, tileSize, values[0], values[1], values[2], values[3]);
-			
-			//TLChild = new QuadTree(TLChildTiles, childMazeSize, tileSize, lowestX, (childMazeSize/2-.5f+lowestX), (childMazeSize/2+lowestY), highestY);
-			//TRChild = new QuadTree(TRChildTiles, childMazeSize, tileSize, (childMazeSize/2+lowestX), highestX, (childMazeSize/2+lowestY), highestY);
-			//BLChild = new QuadTree(BLChildTiles, childMazeSize, tileSize, lowestX, (childMazeSize/2-.5f+lowestX), lowestY, (childMazeSize/2-.5f+lowestY));
-			//BRChild = new QuadTree(BRChildTiles, childMazeSize, tileSize, (childMazeSize/2+lowestX), highestX, lowestY, (childMazeSize/2-.5f+lowestY));
 		}
 		else {	//if the number of tiles isn't a multiple of 4
 			
 			float childMazeSize = mazeSize / 2;	//if the maze size isn't even, then this can become a floating point number, too
-			//System.out.println("QuadTree childMazeSize: " + childMazeSize + " Num of children in Tree: " + (childMazeSize*childMazeSize));
 
 			//The Array Lists for each sub-Quad Tree
 			ArrayList<Tile> TLChildTiles = new ArrayList<Tile>();
@@ -218,34 +175,23 @@ public class QuadTree {
 						BRChildTiles.add(tiles.get(i));
 				}
 
-				//System.out.println("-- %2 --");
-				//System.out.println("TL child size: " + TLChildTiles.size() + " TR child size: " + TRChildTiles.size() + " BL child size: " + BLChildTiles.size() + " BR child size: " + BRChildTiles.size());
-				
 				if(TLChildTiles.size() >= 1) {
 					float[] values = getTilesExtent(TLChildTiles);	//Order is lowestX, highestX, lowestY, highestY
-					
-					//System.out.println("TL lowest X: " + values[0] + " highest X " + values[1] + " lowest Y " + values[2] + " highest Y" + values[3]);
 					
 					TLChild = new QuadTree(TLChildTiles, (int)childMazeSize, tileSize, values[0], values[1], values[2], values[3]);
 				}
 				if(TRChildTiles.size() >= 1) {
 					float[] values = getTilesExtent(TRChildTiles);	//Order is lowestX, highestX, lowestY, highestY
 					
-					//System.out.println("TR lowest X: " + values[0] + " highest X " + values[1] + " lowest Y " + values[2] + " highest Y" + values[3]);
-					
 					TRChild = new QuadTree(TRChildTiles, (int)childMazeSize, tileSize, values[0], values[1], values[2], values[3]);
 				}
 				if(BLChildTiles.size() >= 1) {
 					float[] values = getTilesExtent(BLChildTiles);	//Order is lowestX, highestX, lowestY, highestY
 					
-					//System.out.println("BL lowest X: " + values[0] + " highest X " + values[1] + " lowest Y " + values[2] + " highest Y" + values[3]);
-					
 					BLChild = new QuadTree(BLChildTiles, (int)childMazeSize, tileSize, values[0], values[1], values[2], values[3]);
 				}
 				if(BRChildTiles.size() >= 1) {
 					float[] values = getTilesExtent(BRChildTiles);	//Order is lowestX, highestX, lowestY, highestY
-					
-					//System.out.println("BR lowest X: " + values[0] + " highest X " + values[1] + " lowest Y " + values[2] + " highest Y" + values[3]);
 					
 					BRChild = new QuadTree(BRChildTiles, (int)childMazeSize, tileSize, values[0], values[1], values[2], values[3]);
 				}
@@ -274,39 +220,21 @@ public class QuadTree {
 						BRChildTiles.add(tiles.get(i));
 				}
 
-				//System.out.println("-- 1 or 3 too much. quotient: " + tooManyTiles + " lacking tiles: " + lackingTiles + " mazeSize: " + mazeSize + " child maze size: " + (((float)mazeSize)/2 + tileSize*lackingTiles) + " --");
-				//System.out.println("TL child size: " + TLChildTiles.size() + " TR child size: " + TRChildTiles.size() + " BL child size: " + BLChildTiles.size() + " BR child size: " + BRChildTiles.size());
-				
-				//if(((int)(((float)mazeSize)/2)) == ((float)mazeSize)/2) childMazeSize = ((float)mazeSize)/2;
-				//else childMazeSize = (((float)mazeSize)/2 + tileSize*lackingTiles);
-				
 				if(TLChildTiles.size() >= 1)
 				{
 					float[] values = getTilesExtent(TLChildTiles);	//Order is lowestX, highestX, lowestY, highestY
 					
-					//childMazeSize = roundUpwards((float) Math.sqrt(TLChildTiles.size()));
-					
-					//if(TLChildTiles.size() % 4 == 0) childMazeSize = (float) Math.sqrt(TLChildTiles.size());
 					if(checkPowerOf4(TLChildTiles.size())) childMazeSize = (float) Math.sqrt(TLChildTiles.size());
 					else childMazeSize = (((float)mazeSize)/2 + tileSize*lackingTiles);
-					
-					//System.out.println("TL lowest X: " + values[0] + " TL highest X " + values[1] + " TL lowest Y " + values[2] + " TL highest Y " + values[3]);
-					
+				
 					TLChild = new QuadTree(TLChildTiles, (int)childMazeSize, tileSize, values[0], values[1], values[2], values[3]);
 				}
 
 				if(TRChildTiles.size() >= 1) {
 					float[] values = getTilesExtent(TRChildTiles);	//Order is lowestX, highestX, lowestY, highestY
 					
-					//childMazeSize = roundUpwards((float) Math.sqrt(TRChildTiles.size()));
-					
-					
-					//if(TRChildTiles.size() % 4 == 0) childMazeSize = (float) Math.sqrt(TRChildTiles.size());
 					if(checkPowerOf4(TRChildTiles.size())) childMazeSize = (float) Math.sqrt(TRChildTiles.size());
 					else childMazeSize = (((float)mazeSize)/2 + tileSize*lackingTiles);
-					
-					//System.out.println("TR lowest X: " + values[0] + " TR highest X " + values[1] + " TR lowest Y " + values[2] + " TR highest Y " + values[3]);
-					//System.out.println("childMazeSize: " + childMazeSize);
 					
 					TRChild = new QuadTree(TRChildTiles, (int)childMazeSize, tileSize, values[0], values[1], values[2], values[3]);
 				}
@@ -314,28 +242,18 @@ public class QuadTree {
 				if(BLChildTiles.size() >= 1) {
 					float[] values = getTilesExtent(BLChildTiles);	//Order is lowestX, highestX, lowestY, highestY
 					
-					//childMazeSize = roundUpwards((float) Math.sqrt(BLChildTiles.size()));
-					
-					//if(BLChildTiles.size() % 4 == 0) childMazeSize = (float) Math.sqrt(BLChildTiles.size());
 					if(checkPowerOf4(BLChildTiles.size())) childMazeSize = (float) Math.sqrt(BLChildTiles.size());
 					else childMazeSize = (((float)mazeSize)/2 + tileSize*lackingTiles);
 
-					//System.out.println("BL lowest X: " + values[0] + " BL highest X " + values[1] + " BL lowest Y " + values[2] + " BL highest Y " + values[3]);
-					
 					BLChild = new QuadTree(BLChildTiles, (int)childMazeSize, tileSize, values[0], values[1], values[2], values[3]);
 				}
 				
 				if(BRChildTiles.size() >= 1) {
 					float[] values = getTilesExtent(BRChildTiles);	//Order is lowestX, highestX, lowestY, highestY
 					
-					//childMazeSize = roundUpwards((float) Math.sqrt(BRChildTiles.size()));
-					
-					//if(BRChildTiles.size() % 4 == 0) childMazeSize = (float) Math.sqrt(BRChildTiles.size());
 					if(checkPowerOf4(BRChildTiles.size())) childMazeSize = (float) Math.sqrt(BRChildTiles.size());
 					else childMazeSize = (((float)mazeSize)/2 + tileSize*lackingTiles);
 
-					//System.out.println("BR lowest X: " + values[0] + " BR highest X " + values[1] + " BR lowest Y " + values[2] + " BR highest Y " + values[3]);
-					
 					BRChild = new QuadTree(BRChildTiles, (int)childMazeSize, tileSize, values[0], values[1], values[2], values[3]);
 				}
 			}
@@ -440,13 +358,6 @@ public class QuadTree {
 		}
 		
 		return new float[] {LowestX, HighestX, LowestY, HighestY};
-	}
-	
-	float roundUpwards(float number) {
-		int numberInt = (int) number;
-		
-		if(numberInt == number) return number;
-		else return numberInt++;
 	}
 	
 	boolean checkPowerOf4(int n)
