@@ -43,13 +43,12 @@ public class ClientWriteThread extends Thread{
     public void run() {
     	//System.out.println("Client Write Thread started");
     	
-    	//ToDo: If client is server, then send player death
         while(!glfwWindowShouldClose(window)) {
         	if(MainThread.getMoveComp() != null) {
 	        	int inputCode = MainThread.getMoveComp().getPlayerInputCode();	//fetch local Input code
 	        	
 	        	String inputText = String.valueOf(inputCode);	//convert it to a string
-	            out.println(clientJavaSocket.getLocalPlayerNum() + " " + inputText);	//write it into the output. Text equals: "NumberOfPlayer_Sending_the_command command_to_execute"
+	            out.println("0:" + clientJavaSocket.getLocalPlayerNum() + " " + inputText);	//write it into the output. Text equals: "CommandCode:NumberOfPlayer_Sending_the_command command_to_execute"
             }
         	
         	try {

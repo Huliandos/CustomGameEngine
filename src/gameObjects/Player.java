@@ -19,6 +19,8 @@ public class Player extends GameObject{
 	
 	float r, g, b;
 	
+	boolean dead;
+	
 	Collider collider;
 	
 	public Player(float posX, float posY, int playerNum, boolean localPlayer) {
@@ -67,49 +69,57 @@ public class Player extends GameObject{
 	//The Player is always centered. His position gets added as offset to all other GameObjects
 	@Override
 	public void drawGraphic() {
-		glPushMatrix();
-
-			glTranslatef(-offsetX, -offsetY, 0);	//offset to main player
-			if(!localPlayer)
-				glTranslatef(posX, posY, 0);	//move networked players to their position in the world
-			glRotatef (angle, 0, 0, 1);
-			glColor4f(r,g,b,0);
-			
-			
-			//draws a circle for player body
-		    for (int i = 0; i < numOfCirclePoints; i++)   {
-		        float theta = 360f / (float)numOfCirclePoints * i ;	//get the current angle 
-		        
-				glPushMatrix();
-
-					glRotatef (theta, 0, 0, 1);
-					
-					glBegin(GL_QUADS);
-						glVertex2f(-playerSize/2, -playerSize/2);
-						glVertex2f(-playerSize/2, playerSize/2);
-						glVertex2f(playerSize/2, playerSize/2);
-						glVertex2f(playerSize/2, -playerSize/2);
-				    glEnd();
-	
-				glPopMatrix();
-		    }
-		    
-		    //draws player arms to show firing direction
+		if(!localPlayer && dead) {
+			//do nothing
+		}
+		else {
 			glPushMatrix();
-			
-				glTranslatef((float)Math.sqrt(Math.pow(playerSize/2, 2) + Math.pow(playerSize/2, 2)), 0, 0);	//offset from body
+	
+				glTranslatef(-offsetX, -offsetY, 0);	//offset to main player
+				if(!localPlayer)
+					glTranslatef(posX, posY, 0);	//move networked players to their position in the world
+				
+				glRotatef (angle, 0, 0, 1);
+				
+				if(dead) glColor4f(.9f,.9f,.9f,0);	//if local player is dead color him white
+				else glColor4f(r,g,b,0);
+				
+				
+				//draws a circle for player body
+			    for (int i = 0; i < numOfCirclePoints; i++)   {
+			        float theta = 360f / (float)numOfCirclePoints * i ;	//get the current angle 
+			        
+					glPushMatrix();
+	
+						glRotatef (theta, 0, 0, 1);
+						
+						glBegin(GL_QUADS);
+							glVertex2f(-playerSize/2, -playerSize/2);
+							glVertex2f(-playerSize/2, playerSize/2);
+							glVertex2f(playerSize/2, playerSize/2);
+							glVertex2f(playerSize/2, -playerSize/2);
+					    glEnd();
 		
-				//glColor4f(0,0,0,0);
-			    glBegin(GL_QUADS);
-					glVertex2f(-.02f, 0f);
-					glVertex2f(0f, 0f);
-					glVertex2f(0, .12f);
-					glVertex2f(-.02f, .12f);
-				glEnd();
+					glPopMatrix();
+			    }
+		    
+			    //draws player arms to show firing direction
+				glPushMatrix();
+				
+					glTranslatef((float)Math.sqrt(Math.pow(playerSize/2, 2) + Math.pow(playerSize/2, 2)), 0, 0);	//offset from body
 			
+					//glColor4f(0,0,0,0);
+				    glBegin(GL_QUADS);
+						glVertex2f(-.02f, 0f);
+						glVertex2f(0f, 0f);
+						glVertex2f(0, .12f);
+						glVertex2f(-.02f, .12f);
+					glEnd();
+				
+				glPopMatrix();
+		    
 			glPopMatrix();
-	    
-		glPopMatrix();
+		}
 	}
 	
 	public float getMovementSpeed() {
@@ -141,4 +151,12 @@ public class Player extends GameObject{
 	public Collider getCollider() {
 		return collider;
 	} 
+	
+	public void setDead(boolean dead) {
+		this.dead = dead;
+	}
+	
+	public boolean getDead() {
+		return dead;
+	}
 }

@@ -32,7 +32,7 @@ public class MovementComputation implements Runnable{
 	
 	//shot cooldown
 	double shotCooldown = .5f;
-	double timeStampLastShot = 0;
+	double timeStampLastShot;
 	
 	//collision
 	QuadTree quadTree;
@@ -59,6 +59,8 @@ public class MovementComputation implements Runnable{
 	
 	@Override
 	public void run() {
+		timeStampLastShot = MainThread.getTime() + shotCooldown;
+		
 		while(!glfwWindowShouldClose(window)) {
 			manageInputs();	//for player
 			
@@ -261,19 +263,22 @@ public class MovementComputation implements Runnable{
 		}
 		
 		if(glfwGetKey(window, GLFW_KEY_SPACE) == GL_TRUE) {
-			//shoot
-			if(MainThread.getTime() > timeStampLastShot + shotCooldown) {	//shoot if shooting cd has passed
-				//System.out.println("pew");
-				//MainThread.spawnBullet(player.getXPosition(), player.getYPosition(), player.getPlayerNum(), x, y);
-				
-				Bullet bullet = new Bullet(player.getXPosition(), player.getYPosition(), player.getPlayerNum(), player.getViewDirection());
-				synchronized(dynamicGameObjects) {
-					dynamicGameObjects.add(bullet);
+
+			if(!player.getDead()) {	//Player can only shoot if he or she isn't dead
+				//shoot
+				if(MainThread.getTime() > timeStampLastShot + shotCooldown) {	//shoot if shooting cd has passed
+					//System.out.println("pew");
+					//MainThread.spawnBullet(player.getXPosition(), player.getYPosition(), player.getPlayerNum(), x, y);
+					
+					Bullet bullet = new Bullet(player.getXPosition(), player.getYPosition(), player.getPlayerNum(), player.getViewDirection());
+					synchronized(dynamicGameObjects) {
+						dynamicGameObjects.add(bullet);
+					}
+					
+					playerInputCode += 32;	//sixth bit
+					
+					timeStampLastShot = MainThread.getTime();
 				}
-				
-				playerInputCode += 32;	//sixth bit
-				
-				timeStampLastShot = MainThread.getTime();
 			}
 		}
 		
@@ -355,6 +360,7 @@ public class MovementComputation implements Runnable{
 				offsetX = player.getXPosition();
 				offsetY = player.getYPosition();
 				
+				/*
 				for (GameObject player : dynamicGameObjects) {
 					//if all players have been checked then stop this loop
 					if(player.getClass() != Player.class) break;	
@@ -363,6 +369,7 @@ public class MovementComputation implements Runnable{
 						System.out.println(go + " colliding with " + player);
 					}
 				}
+				*/
 			}
 			else if(go.getClass() == Player.class) {	//networked players
 				go.setOffset(offsetX, offsetY);
@@ -381,8 +388,11 @@ public class MovementComputation implements Runnable{
 						if(player.getClass() != Player.class) break;	
 						//don't collide with player that shot the bullet
 						else if(((Player)player).getPlayerNum() != ((Bullet)go).getBulletPlayerNum()){
-							if(CollisionDetection.scanForCollision(go, player))
+							if(CollisionDetection.scanForCollision(go, player)) {
+								MainThread.broadcastKillPlayer(((Player)player).getPlayerNum());
+								
 								System.out.println(go + " killed: " + player);
+							}
 						}
 					}
 				}

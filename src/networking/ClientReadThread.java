@@ -55,22 +55,50 @@ public class ClientReadThread extends Thread {
             cwt.start();
             
             while (!glfwWindowShouldClose(window)) {
-                String[] response = in.readLine().split(" ");
-
                 //ToDo: differentiate between different message types
                 //1: player input
                 //2: player and bullet collision
                 
-                //extract data out of send string
-                int playerNum = Integer.valueOf(response[0]);
-                int inputCode = Integer.valueOf(response[1]);
+                String[] response = in.readLine().split(":");
+                int commandCode = Integer.valueOf(response[0]);
+                if(commandCode == 0) {	//input command
+	                String[] input = response[1].split(" ");
+	
+	                //extract data out of send string
+	                int playerNum = Integer.valueOf(input[0]);
+	                int inputCode = Integer.valueOf(input[1]);
+	                
+	                if(MainThread.getMoveComp() != null) {
+	            		MainThread.getMoveComp().setPlayerInput(playerNum, inputCode);
+	            	}
+                }
+                else if(commandCode == 1) {	//player position
+                	System.out.println(response[1]);
+	                String[] playerPositions = response[1].split(",");
 
-	        	//System.out.println("ClientReadThread: reading input text " + inputCode + " from player " + playerNum);
-                //execute the command that this player has send
-            	if(MainThread.getMoveComp() != null) {
-            		MainThread.getMoveComp().setPlayerInput(playerNum, inputCode);
-            	}
-                //System.out.println("playerNum: " + response[0] + " inputCode: " + response[1]);
+	                int[] playerNums = new int[playerPositions.length];
+	                int[] tilePos = new int[playerPositions.length];
+	                
+	                for (int i=0; i<playerPositions.length; i++) {
+	                	String[] code = playerPositions[i].split("-");
+	                	
+	                	playerNums[i] = Integer.valueOf(code[0]);
+	                	tilePos[i] = Integer.valueOf(code[1]);
+	                }
+	                
+	                MainThread.storePlayerPositions(playerNums, tilePos);
+                }
+                else if(commandCode == 2) {	//player death
+                	int playerNum = Integer.valueOf(response[1]);
+                	
+                	MainThread.killPlayer(playerNum);
+                }
+                else if(commandCode == 3) {	//zombie movement
+                	
+                }
+                else if(commandCode == 4) { //zombie death
+                	
+                }
             }
         } catch (IOException ex) {
             System.out.println("Error reading from server: " + ex.getMessage());

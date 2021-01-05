@@ -14,6 +14,7 @@ public class Tile extends GameObject {
 	Collider collider;
 	
 	ArrayList<Wall> walls = new ArrayList<Wall>();
+	ArrayList<Tile> neighbors = new ArrayList<Tile>();
 	
 	public Tile(float posX, float posY, float width, float height) {
 		this.posX = posX;
@@ -52,5 +53,13 @@ public class Tile extends GameObject {
 	
 	public ArrayList<Wall> getWalls(){
 		return walls;
+	}
+	
+	public void addNeighbor(Tile neighbor) {
+		neighbors.add(neighbor);
+	}
+	
+	public ArrayList<Tile> getNeighbors(){
+		return neighbors;
 	}
 }

@@ -24,7 +24,9 @@ import levelBuild.ComputeLevel;
 import levelBuild.BuildLevel;
 
 import networking.ClientJavaSocket;
+import networking.ServerInputHandler;
 import networking.ServerJavaSocket;
+import networking.ServerUserThread;
 
 public class MainThread {
 	
@@ -35,6 +37,7 @@ public class MainThread {
 	static ServerJavaSocket serverJavaSocket;
 	static Thread sjsThread;
 	static ClientJavaSocket clientJavaSocket;
+	static ServerInputHandler serverInputHandler;
 	
 	//Multi threading params
 	static Object FPS_SYNC_TOKEN;
@@ -66,6 +69,9 @@ public class MainThread {
 	//Colliders
 	static QuadTree quadTree;
 	
+	//player Spawning
+	static int[] playerNum; 
+	static int[] playerTile;
 	
 	public static void main(String[] args) {	//args: bool for server, port, userName
 		
@@ -221,8 +227,12 @@ public class MainThread {
 		
 		staticGameObjects.addAll(tiles);
 		
+		//init QuadTree
 		quadTree = new QuadTree(tiles, levelSize, tileSize, 0, levelSize*.5f - .5f, 0, levelSize*.5f - .5f);
 	
+		//init tile neighborhood for AI
+		
+		
 		///walls\\\
 		//String seed = BuildLevel.generateLevel(levelSize);
 		//System.out.print(seed);
@@ -263,6 +273,36 @@ public class MainThread {
 			}
 		}
 		
+		//generate Position for every player
+		if(server) {
+			int[] randPlayerTiles = new int[clientJavaSocket.getTotalPlayerNum()];
+			
+			for(int i=0; i<clientJavaSocket.getTotalPlayerNum(); i++) {
+				Random rand = new Random();
+				int randomNum = rand.nextInt(levelSize*levelSize);
+				
+				int j= i-1;
+				
+				//if there's enough tiles for all players
+				if(clientJavaSocket.getTotalPlayerNum() > levelSize*levelSize) {
+					//go through all already generated positions and check if this tile has already been applied to a player
+					while (j>=0) {
+						if(randPlayerTiles[j] == randomNum) {
+							randomNum = rand.nextInt(levelSize*levelSize);
+							j = i-1;
+						}
+					}
+				}
+				
+				randPlayerTiles[i] = randomNum;
+			}
+			
+			sendPlayerPositions(randPlayerTiles);
+		}
+		
+		applyPlayerPositions();
+		
+		
 		///zombies\\
 		
 	}
@@ -283,8 +323,8 @@ public class MainThread {
 		double unprocessed = 0;		//time where game hasn't been processed yet
 		
 		//for debugging only
-		double frameTime = 0;
-		int frames = 0;
+		//double frameTime = 0;
+		//int frames = 0;
 		
 		
 		//while loop drawing the scene
@@ -294,7 +334,7 @@ public class MainThread {
 			double time_2 = getTime();
 			double passed = time_2 - time;
 			unprocessed += passed;
-			frameTime += passed;
+			//frameTime += passed;
 			
 			time = time_2;
 			
@@ -303,11 +343,11 @@ public class MainThread {
 				screenUpdated = true;
 				
 				glfwPollEvents();
-				if(frameTime >= 1) {
-					frameTime = 0;
+				//if(frameTime >= 1) {
+				//	frameTime = 0;
 					//System.out.println("FPS: " + frames);
-					frames = 0;
-				}
+				//	frames = 0;
+				//}
 			}
 			
 			if(screenUpdated) {
@@ -330,7 +370,7 @@ public class MainThread {
 				}
 				
 				glfwSwapBuffers(window);
-				frames++;
+				//frames++;
 			}
 		}
 			
@@ -385,7 +425,62 @@ public class MainThread {
 		return server;
 	}
 	
+	
+	//collision
 	public static QuadTree getQuadTree() {
 		return quadTree;
+	}
+	
+	
+	//player and zombie killing
+	public static void setServerInputHandler(ServerInputHandler SIH) {
+		serverInputHandler = SIH;
+	}
+	
+	public static void broadcastKillPlayer(int playerNum) {
+		serverInputHandler.broadcastInput("2:" + playerNum, null);
+	}
+	
+	public static void killPlayer(int playerNum) {
+		for(GameObject go : dynamicGameObjects) {
+			if(go.getClass() != Player.class) break;
+			
+			if(((Player)go).getPlayerNum() == playerNum) {
+				((Player)go).setDead(true);
+				
+				break;
+			}
+		}
+	}
+	
+	//player Spawning
+	public static void sendPlayerPositions(int[] playerTile) {
+		String playerPosString = "";
+		
+		for (int i=0; i<playerTile.length; i++) {
+			playerPosString = playerPosString + i + "-" + playerTile[i];
+			if(i != playerTile.length-1) playerPosString = playerPosString + ",";
+		}
+		
+		serverInputHandler.broadcastInput("1:" + playerPosString, null);
+	}
+	
+	public static void storePlayerPositions(int[] playerNumbers, int[] playerTiles) {
+		//Stores player Positions, because clients don't have their players initialized when the other player positions arrive from the server
+		
+		playerNum = playerNumbers;
+		playerTile = playerTiles;
+	}
+	
+	public static void applyPlayerPositions() {
+		for (int i=0; i<playerNum.length; i++) {
+			Player player = (Player)dynamicGameObjects.get(i);
+			
+			//cause the first player in the list is always the local player
+			float posX = (playerTile[player.getPlayerNum()]%levelSize)*.5f;	//-.5f is tileSize
+			float posY = playerTile[player.getPlayerNum()]/levelSize*.5f;
+			
+			player.setPosition(posX, posY);
+		}
 	}
 }

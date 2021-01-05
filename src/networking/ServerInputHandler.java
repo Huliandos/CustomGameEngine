@@ -3,12 +3,18 @@ package networking;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import graphics.MainThread;
+
 public class ServerInputHandler {
 	//ArrayList<PrintWriter> outputStreams = new ArrayList<PrintWriter>();
 	ArrayList<ServerUserThread> users = new ArrayList<ServerUserThread>();
 	Object START_GAME_TOKEN;
 	
 	public ServerInputHandler(Object START_GAME_TOKEN) {
+		if(MainThread.isLocalClientServer()) {
+			MainThread.setServerInputHandler(this);
+		}
+		
 		this.START_GAME_TOKEN = START_GAME_TOKEN;
 	}
 	
