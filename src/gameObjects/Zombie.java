@@ -15,6 +15,9 @@ import collision.Collider;
 
 public class Zombie extends GameObject {
 
+	//unique ID to identify zombie over network for its destruction
+	int id;
+	
 	float movementSpeed = .005f;
 	float zombieSize = .1f;
 	
@@ -24,7 +27,8 @@ public class Zombie extends GameObject {
 	
 	Collider collider;
 	
-	public Zombie(float posX, float posY) {
+	public Zombie(int id, float posX, float posY) {
+		this.id = id;
 		this.posX = posX;
 		this.posY = posY;
 		
@@ -38,6 +42,7 @@ public class Zombie extends GameObject {
 		glPushMatrix();
 
 			glTranslatef(-offsetX, -offsetY, 0);	//offset to main player
+			glTranslatef(posX, posY, 0);
 			glRotatef (angle, 0, 0, 1);
 			glColor4f(.25f,.5f,.2f,0);
 			
@@ -82,10 +87,10 @@ public class Zombie extends GameObject {
 		
 				//glColor4f(0,0,0,0);
 			    glBegin(GL_QUADS);
-					glVertex2f(-.02f, 0f);
+					glVertex2f(.02f, 0f);
 					glVertex2f(0f, 0f);
 					glVertex2f(0, .12f);
-					glVertex2f(-.02f, .12f);
+					glVertex2f(.02f, .12f);
 				glEnd();
 		
 			glPopMatrix();
@@ -109,4 +114,8 @@ public class Zombie extends GameObject {
 	public Collider getCollider() {
 		return collider;
 	} 
+	
+	public int getID() {
+		return id;
+	}
 }

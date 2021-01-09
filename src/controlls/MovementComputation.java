@@ -13,7 +13,7 @@ import gameObjects.Bullet;
 import gameObjects.GameObject;
 import gameObjects.Player;
 import gameObjects.Tile;
-
+import gameObjects.Zombie;
 import graphics.MainThread;
 
 public class MovementComputation implements Runnable{
@@ -46,15 +46,6 @@ public class MovementComputation implements Runnable{
 		player = (Player) dynamicGameObjects.get(0);
 		
 		quadTree = MainThread.getQuadTree();
-		
-		/*
-		MovingBlock movB = new MovingBlock(0, 0);
-		dynamicGameObjects.add(movB);
-		movB = new MovingBlock(.3f, .4f);
-		dynamicGameObjects.add(movB);
-		movB = new MovingBlock(.7f, -.2f);
-		dynamicGameObjects.add(movB);
-		*/
 	}
 	
 	@Override
@@ -93,26 +84,9 @@ public class MovementComputation implements Runnable{
 		if(glfwGetKey(window, GLFW_KEY_D) == GL_TRUE) {	//right
 			canceledMovement:{
 				
-				ArrayList<Tile> tiles = quadTree.getCollidingTiles(player, moveSpeed, 0);
-				for (GameObject tile : tiles) {
-					//go through all walls of the tile
-					for (GameObject wall : ((Tile)tile).getWalls()) {
-						//if the player collides with a wall after applying movement
-						if(CollisionDetection.scanForCollision(player, wall, moveSpeed, 0)) {
-							break canceledMovement;
-						}
-					}
-				}
-				
-				//scanning all Tiles
-				/*
-				for (GameObject tile : staticGameObjects) {
-					//if all tiles have been checked then stop this loop
-					if(tile.getClass() != Tile.class) {
-						break;	
-					}
-					//if player is on tile
-					else if(CollisionDetection.scanForCollision(player, tile)){
+				if(!player.getDead()) {	//dead players don't have a collider
+					ArrayList<Tile> tiles = quadTree.getCollidingTiles(player, moveSpeed, 0);
+					for (GameObject tile : tiles) {
 						//go through all walls of the tile
 						for (GameObject wall : ((Tile)tile).getWalls()) {
 							//if the player collides with a wall after applying movement
@@ -122,7 +96,6 @@ public class MovementComputation implements Runnable{
 						}
 					}
 				}
-				*/
 				
 				x+=moveSpeed;
 				playerInputCode += 1;	//first bit
@@ -130,27 +103,10 @@ public class MovementComputation implements Runnable{
 		}
 		else if(glfwGetKey(window, GLFW_KEY_A) == GL_TRUE) { //left
 			canceledMovement:{
-			
-				ArrayList<Tile> tiles = quadTree.getCollidingTiles(player, -moveSpeed, 0);
-				for (GameObject tile : tiles) {
-					//go through all walls of the tile
-					for (GameObject wall : ((Tile)tile).getWalls()) {
-						//if the player collides with a wall after applying movement
-						if(CollisionDetection.scanForCollision(player, wall, -moveSpeed, 0)) {
-							break canceledMovement;
-						}
-					}
-				}
-				
-				//scanning all Tiles
-				/*
-				for (GameObject tile : staticGameObjects) {
-					//if all tiles have been checked then stop this loop
-					if(tile.getClass() != Tile.class) {
-						break;	
-					}
-					//if player is on tile
-					else if(CollisionDetection.scanForCollision(player, tile)){
+
+				if(!player.getDead()) {	//dead players don't have a collider
+					ArrayList<Tile> tiles = quadTree.getCollidingTiles(player, -moveSpeed, 0);
+					for (GameObject tile : tiles) {
 						//go through all walls of the tile
 						for (GameObject wall : ((Tile)tile).getWalls()) {
 							//if the player collides with a wall after applying movement
@@ -160,7 +116,6 @@ public class MovementComputation implements Runnable{
 						}
 					}
 				}
-				*/
 				
 				x-=moveSpeed;
 				playerInputCode += 2;	//second bit
@@ -170,26 +125,10 @@ public class MovementComputation implements Runnable{
 		if(glfwGetKey(window, GLFW_KEY_W) == GL_TRUE) { //up
 			canceledMovement:{
 			
-				ArrayList<Tile> tiles = quadTree.getCollidingTiles(player, 0, moveSpeed);
-				for (GameObject tile : tiles) {
-					//go through all walls of the tile
-					for (GameObject wall : ((Tile)tile).getWalls()) {
-						//if the player collides with a wall after applying movement
-						if(CollisionDetection.scanForCollision(player, wall, 0, moveSpeed)) {
-							break canceledMovement;
-						}
-					}
-				}
-				
-				//scanning all Tiles
-				/*
-				for (GameObject tile : staticGameObjects) {
-					//if all tiles have been checked then stop this loop
-					if(tile.getClass() != Tile.class) {
-						break;	
-					}
-					//if player is on tile
-					else if(CollisionDetection.scanForCollision(player, tile)){
+
+				if(!player.getDead()) {	//dead players don't have a collider
+					ArrayList<Tile> tiles = quadTree.getCollidingTiles(player, 0, moveSpeed);
+					for (GameObject tile : tiles) {
 						//go through all walls of the tile
 						for (GameObject wall : ((Tile)tile).getWalls()) {
 							//if the player collides with a wall after applying movement
@@ -199,7 +138,6 @@ public class MovementComputation implements Runnable{
 						}
 					}
 				}
-				*/
 				
 				y+=moveSpeed;
 				playerInputCode += 4;	//third bit
@@ -208,26 +146,10 @@ public class MovementComputation implements Runnable{
 		else if(glfwGetKey(window, GLFW_KEY_S) == GL_TRUE) { //down
 			canceledMovement:{
 				
-				ArrayList<Tile> tiles = quadTree.getCollidingTiles(player, 0, -moveSpeed);
-				for (GameObject tile : tiles) {
-					//go through all walls of the tile
-					for (GameObject wall : ((Tile)tile).getWalls()) {
-						//if the player collides with a wall after applying movement
-						if(CollisionDetection.scanForCollision(player, wall, 0, -moveSpeed)) {
-							break canceledMovement;
-						}
-					}
-				}
-			
-				//scanning all Tiles
-				/*
-				for (GameObject tile : staticGameObjects) {
-					//if all tiles have been checked then stop this loop
-					if(tile.getClass() != Tile.class) {
-						break;	
-					}
-					//if player is on tile
-					else if(CollisionDetection.scanForCollision(player, tile)){
+
+				if(!player.getDead()) {	//dead players don't have a collider
+					ArrayList<Tile> tiles = quadTree.getCollidingTiles(player, 0, -moveSpeed);
+					for (GameObject tile : tiles) {
 						//go through all walls of the tile
 						for (GameObject wall : ((Tile)tile).getWalls()) {
 							//if the player collides with a wall after applying movement
@@ -237,7 +159,6 @@ public class MovementComputation implements Runnable{
 						}
 					}
 				}
-				*/
 				
 				y-=moveSpeed;
 				playerInputCode += 8;	//fourth bit
@@ -352,24 +273,22 @@ public class MovementComputation implements Runnable{
 	}
 	
 	void moveObjects() {
-		for(int i=0; i<dynamicGameObjects.size(); i++){
-			GameObject go = dynamicGameObjects.get(i);
+		//cloning dynamic objects
+		/*
+		ArrayList<GameObject> copyOfDGO = new ArrayList<GameObject>();
+		synchronized (dynamicGameObjects){
+			for (GameObject go : dynamicGameObjects) copyOfDGO.add(go);
+		}
+		*/
+		ArrayList<GameObject> copyOfDGO = MainThread.getCopyOfDynamicObjects();
+		
+		for(int i=0; i<copyOfDGO.size(); i++){
+			GameObject go = copyOfDGO.get(i);
 			
 			
 			if(go==player) {	//local player
 				offsetX = player.getXPosition();
 				offsetY = player.getYPosition();
-				
-				/*
-				for (GameObject player : dynamicGameObjects) {
-					//if all players have been checked then stop this loop
-					if(player.getClass() != Player.class) break;	
-					//don't collide with player that shot the bullet
-					else if(player != this.player && CollisionDetection.scanForCollision(go, player)){
-						System.out.println(go + " colliding with " + player);
-					}
-				}
-				*/
 			}
 			else if(go.getClass() == Player.class) {	//networked players
 				go.setOffset(offsetX, offsetY);
@@ -383,11 +302,11 @@ public class MovementComputation implements Runnable{
 				//bullet collision is only against players and walls
 				//Server checks for Collision for all Clients and sends the solution over to the over clients over the network
 				if(MainThread.isLocalClientServer()) {
-					for (GameObject player : dynamicGameObjects) {
+					for (GameObject player : copyOfDGO) {
 						//if all players have been checked then stop this loop
 						if(player.getClass() != Player.class) break;	
 						//don't collide with player that shot the bullet
-						else if(((Player)player).getPlayerNum() != ((Bullet)go).getBulletPlayerNum()){
+						else if(((Player)player).getCollider() != null & ((Player)player).getPlayerNum() != ((Bullet)go).getBulletPlayerNum()){	//Collider can be null once player died
 							if(CollisionDetection.scanForCollision(go, player)) {
 								MainThread.broadcastKillPlayer(((Player)player).getPlayerNum());
 								
@@ -397,6 +316,19 @@ public class MovementComputation implements Runnable{
 					}
 				}
 
+				//Collision against Zombies
+				if(MainThread.isLocalClientServer()) {
+					for (GameObject zombie : copyOfDGO) {
+						if(zombie.getClass() == Zombie.class) {
+							if(CollisionDetection.scanForCollision(go, zombie)) {
+								MainThread.sendKillZombie(((Zombie)zombie).getID());
+								
+								System.out.println(go + " killed: " + zombie);
+							}
+						}
+					}
+				}
+				
 				//Collision against Tiles
 				bulletDestroyed:{
 					
@@ -427,28 +359,6 @@ public class MovementComputation implements Runnable{
 							}
 						}
 					}
-					
-					/*
-					for (GameObject tile : staticGameObjects) {
-						//if all tiles have been checked then stop this loop
-						if(tile.getClass() != Tile.class) {
-							break;	
-						}
-						//if bullet is on tile
-						else if(CollisionDetection.scanForCollision(go, tile)){
-							//go through all walls of the tile
-							for (GameObject wall : ((Tile)tile).getWalls()) {
-								//if the bullet collides with any wall of the tile
-								if(CollisionDetection.scanForCollision(go, wall)) {
-									MainThread.destroyBullet(go);
-									
-									System.out.println(go + " destroyed");
-									break bulletDestroyed;
-								}
-							}
-						}
-					}
-					*/
 				}
 			}
 			else{	//zombies
@@ -458,9 +368,7 @@ public class MovementComputation implements Runnable{
 				
 				//random Object Jitter
 				//ToDo: add actual movement logic for stuff
-				Random r = new Random();
-				x = -.005f + (.005f - -.005f) * r.nextFloat();
-				y = -.005f + (.005f - -.005f) * r.nextFloat();
+				//y = .005f;
 				
 				go.move(x, y);
 				setObjectAngle(go, x, y);

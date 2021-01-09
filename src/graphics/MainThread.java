@@ -13,13 +13,14 @@ import org.lwjgl.opengl.GL;
 import collision.QuadTree;
 
 import controlls.MovementComputation;
-
+import events.EventThread;
+import events.ZombieSpawner;
 import gameObjects.Bullet;
 import gameObjects.GameObject;
 import gameObjects.Player;
 import gameObjects.Tile;
 import gameObjects.Wall;
-
+import gameObjects.Zombie;
 import levelBuild.ComputeLevel;
 import levelBuild.BuildLevel;
 
@@ -62,6 +63,7 @@ public class MainThread {
 	//Level Generation variables
 	static String levelSeed = "";
 	static int levelSize = 8;	//8 is regular size
+	static float tileSize = .5f;
 	
 	//game controlling variables
 	public static boolean startGame = false;
@@ -72,6 +74,10 @@ public class MainThread {
 	//player Spawning
 	static int[] playerNum; 
 	static int[] playerTile;
+	
+	//Events
+	static EventThread eventThread;
+	static Thread eThread;
 	
 	public static void main(String[] args) {	//args: bool for server, port, userName
 		
@@ -217,7 +223,6 @@ public class MainThread {
 		ArrayList<Tile> tiles = new ArrayList<Tile>();
 		
 		///tiles\\\
-		float tileSize = .5f;
 		for(int y=0; y<levelSize; y++) {
 			for(int x=0; x<levelSize; x++) {
 				Tile tile = new Tile(x*.5f, y*.5f, tileSize*.98f, tileSize*.98f);
@@ -262,6 +267,7 @@ public class MainThread {
 
 		///players\\\
 		//add local player
+		
 		Player player = new Player(0, 0, clientJavaSocket.getLocalPlayerNum(), true);
 		dynamicGameObjects.add(player);
 
@@ -273,9 +279,11 @@ public class MainThread {
 			}
 		}
 		
+		
 		//generate Position for every player
 		if(server) {
 			int[] randPlayerTiles = new int[clientJavaSocket.getTotalPlayerNum()];
+			int[] playerNums = new int[clientJavaSocket.getTotalPlayerNum()];
 			
 			for(int i=0; i<clientJavaSocket.getTotalPlayerNum(); i++) {
 				Random rand = new Random();
@@ -295,16 +303,35 @@ public class MainThread {
 				}
 				
 				randPlayerTiles[i] = randomNum;
+				playerNums[i] = i;
 			}
 			
 			sendPlayerPositions(randPlayerTiles);
+			//storePlayerPositions(playerNums, randPlayerTiles);
+			//applyPlayerPositions();
 		}
-		
-		applyPlayerPositions();
 		
 		
 		///zombies\\
-		
+		if(server) {
+			eventThread = new EventThread();
+			
+			//Have three different Zombie spawners at the same time
+			//ZombieSpawner zombieSpawn = new ZombieSpawner(levelSize, tileSize);
+			ZombieSpawner zombieSpawn = new ZombieSpawner(levelSize, tileSize, 0);
+			eventThread.add(zombieSpawn);
+			
+			//zombieSpawn = new ZombieSpawner(levelSize, tileSize);
+			zombieSpawn = new ZombieSpawner(levelSize, tileSize, 750);
+			eventThread.add(zombieSpawn);
+			
+			//zombieSpawn = new ZombieSpawner(levelSize, tileSize);
+			zombieSpawn = new ZombieSpawner(levelSize, tileSize, 1500);
+			eventThread.add(zombieSpawn);
+			
+			eThread = new Thread(eventThread);
+			eThread.start();
+		}
 	}
 	
 	static void initMovementComputation(){
@@ -389,6 +416,7 @@ public class MainThread {
 		if(serverJavaSocket != null) sjsThread.interrupt();
 		
 		moveCompThread.interrupt();
+		eThread.interrupt();
 	}
 	
 	//Utility methods
@@ -423,6 +451,14 @@ public class MainThread {
 	
 	public static boolean isLocalClientServer() {
 		return server;
+	}
+	
+	public static ArrayList<GameObject> getCopyOfDynamicObjects(){
+		ArrayList<GameObject> clone = new ArrayList<GameObject>();
+		for (GameObject go : dynamicGameObjects) {
+			clone.add(go);
+		}
+		return clone;
 	}
 	
 	
@@ -470,6 +506,8 @@ public class MainThread {
 		
 		playerNum = playerNumbers;
 		playerTile = playerTiles;
+		
+		applyPlayerPositions();
 	}
 	
 	public static void applyPlayerPositions() {
@@ -477,10 +515,51 @@ public class MainThread {
 			Player player = (Player)dynamicGameObjects.get(i);
 			
 			//cause the first player in the list is always the local player
-			float posX = (playerTile[player.getPlayerNum()]%levelSize)*.5f;	//-.5f is tileSize
-			float posY = playerTile[player.getPlayerNum()]/levelSize*.5f;
+			float posX = (playerTile[player.getPlayerNum()]%levelSize)*tileSize;	//-.5f is tileSize
+			float posY = playerTile[player.getPlayerNum()]/levelSize*tileSize;
 			
 			player.setPosition(posX, posY);
+		}
+	}
+	
+	//Zombie spawning
+	public static void sendZombieSpawn(int id, int spawnTile) {
+		String zombieSpawnString = id + "," + spawnTile;
+		
+		serverInputHandler.broadcastInput("3:" + zombieSpawnString, null);
+	}
+	
+	public static void spawnZombie(int id, int spawnTile) {
+		float posX = (spawnTile%levelSize)*tileSize;	//-.5f is tileSize
+		float posY = (spawnTile/levelSize)*tileSize;
+		
+		Zombie zombie = new Zombie(id, posX, posY);
+		
+		System.out.println("Spawning Zombie " + id + " at pos: " + posX + "|" + posY);
+		
+		synchronized(dynamicGameObjects) {
+			dynamicGameObjects.add(zombie);
+		}
+	}
+	
+	public static void sendKillZombie(int id) {
+		String zombieKillString = String.valueOf(id);
+
+		serverInputHandler.broadcastInput("5:" + zombieKillString, null);
+	}
+	
+	public static void killZombie(int id) {
+		synchronized(dynamicGameObjects) {
+			Zombie zombie = null; 
+			for(GameObject go : dynamicGameObjects) {
+				if(go.getClass() == Zombie.class) {
+					if(((Zombie)go).getID() == id) {
+						zombie = (Zombie)go;
+						break;
+					}
+				}
+			}
+			dynamicGameObjects.remove(zombie);
 		}
 	}
 }

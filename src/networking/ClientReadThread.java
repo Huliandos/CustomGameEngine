@@ -73,7 +73,15 @@ public class ClientReadThread extends Thread {
 	            	}
                 }
                 else if(commandCode == 1) {	//player position
-                	System.out.println(response[1]);
+                	while(MainThread.getCopyOfDynamicObjects().size() == 0) {	//while players aren't initialized on local client
+                		try {
+							this.sleep(250);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+                	}
+                	
 	                String[] playerPositions = response[1].split(",");
 
 	                int[] playerNums = new int[playerPositions.length];
@@ -93,11 +101,21 @@ public class ClientReadThread extends Thread {
                 	
                 	MainThread.killPlayer(playerNum);
                 }
-                else if(commandCode == 3) {	//zombie movement
+                else if(commandCode == 3) {	//zombie spawn
+                	String[] zombieData = response[1].split(",");
+
+ 	                int id = Integer.valueOf(zombieData[0]);
+ 	                int tileNum = Integer.valueOf(zombieData[1]);
+ 	                
+ 	                MainThread.spawnZombie(id, tileNum);
+                }
+                else if(commandCode == 4) {	//zombie movement
                 	
                 }
-                else if(commandCode == 4) { //zombie death
+                else if(commandCode == 5) { //zombie death
+                	int zombieKillId = Integer.valueOf(response[1]);
                 	
+                	MainThread.killZombie(zombieKillId);
                 }
             }
         } catch (IOException ex) {

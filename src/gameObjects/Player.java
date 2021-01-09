@@ -154,6 +154,7 @@ public class Player extends GameObject{
 	
 	public void setDead(boolean dead) {
 		this.dead = dead;
+		collider = null;	//remove the players collider
 	}
 	
 	public boolean getDead() {
