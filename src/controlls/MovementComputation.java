@@ -4,8 +4,8 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 import java.util.ArrayList;
-import java.util.Random;
 
+import ai.AIBehaviour;
 import collision.CollisionDetection;
 import collision.QuadTree;
 
@@ -272,6 +272,121 @@ public class MovementComputation implements Runnable{
 		setObjectAngle(player, x, y);
 	}
 	
+	public void applyInputCode(Zombie zombie) {
+		float x = 0, y = 0;
+		float moveSpeed = zombie.getMovementSpeed();
+		int inputCode = zombie.getInputCode();
+		
+		if(inputCode / 8 == 1)	{	//4th bit == 1 --> down
+			y-=moveSpeed;
+			inputCode -= 8;
+		}
+		if(inputCode / 4 == 1)	{	//3th bit == 1 --> up
+			y+=moveSpeed;
+			inputCode -= 4;
+		}
+		if(inputCode / 2 == 1)	{	//2th bit == 1 --> left
+			x-=moveSpeed;
+			inputCode -= 2;
+		}
+		if(inputCode / 1 == 1)	{	//1th bit == 1 --> right
+			x+=moveSpeed;
+			inputCode -= 1;
+		}
+		
+		if(x!=0 && y!=0) {
+			float magnitude = (float)Math.sqrt((float)Math.pow(x, 2) + (float)Math.pow(y, 2));
+			
+			float factor = moveSpeed / magnitude;
+			
+			x *= factor;
+			y *= factor;
+		}
+		
+		zombie.move(x, y);
+		setObjectAngle(zombie, x, y);
+	}
+	
+	//adjusts Input Code to consider collision
+	int adjustInputCode(GameObject go, int inputCode) {
+		float moveSpeed = .5f;
+		if(go.getClass() == Zombie.class) moveSpeed = ((Zombie)go).getMovementSpeed();
+		else if(go.getClass() == Player.class) moveSpeed = ((Player)go).getMovementSpeed();
+			
+		int correctedInputCode = 0;
+		
+		if(inputCode / 8 == 1)	{	//4th bit == 1 --> down
+			canceledMovement:{
+				ArrayList<Tile> tiles = quadTree.getCollidingTiles(go, 0, -moveSpeed);
+				for (GameObject tile : tiles) {
+					//go through all walls of the tile
+					for (GameObject wall : ((Tile)tile).getWalls()) {
+						//if the player collides with a wall after applying movement
+						if(CollisionDetection.scanForCollision(go, wall, 0, -moveSpeed)) {
+							break canceledMovement;
+						}
+					}
+				}
+
+				correctedInputCode += 8;
+				inputCode -= 8;
+			}
+		}
+		if(inputCode / 4 == 1)	{	//3th bit == 1 --> up
+			canceledMovement:{
+			ArrayList<Tile> tiles = quadTree.getCollidingTiles(go, 0, moveSpeed);
+			for (GameObject tile : tiles) {
+				//go through all walls of the tile
+				for (GameObject wall : ((Tile)tile).getWalls()) {
+					//if the player collides with a wall after applying movement
+					if(CollisionDetection.scanForCollision(go, wall, 0, moveSpeed)) {
+						break canceledMovement;
+					}
+				}
+			}
+
+			correctedInputCode += 4;
+			inputCode -= 4;
+			}
+		}
+		if(inputCode / 2 == 1)	{	//2th bit == 1 --> left
+			canceledMovement:{
+			ArrayList<Tile> tiles = quadTree.getCollidingTiles(go, -moveSpeed, 0);
+			for (GameObject tile : tiles) {
+				//go through all walls of the tile
+				for (GameObject wall : ((Tile)tile).getWalls()) {
+					//if the player collides with a wall after applying movement
+					if(CollisionDetection.scanForCollision(go, wall, -moveSpeed, 0)) {
+						break canceledMovement;
+					}
+				}
+			}
+
+			correctedInputCode += 2;
+			inputCode -= 2;
+			}
+		}
+		if(inputCode / 1 == 1)	{	//1th bit == 1 --> right
+			canceledMovement:{
+			ArrayList<Tile> tiles = quadTree.getCollidingTiles(go, moveSpeed, 0);
+			for (GameObject tile : tiles) {
+				//go through all walls of the tile
+				for (GameObject wall : ((Tile)tile).getWalls()) {
+					//if the player collides with a wall after applying movement
+					if(CollisionDetection.scanForCollision(go, wall, moveSpeed, 0)) {
+						break canceledMovement;
+					}
+				}
+			}
+			
+			correctedInputCode += 1;
+			inputCode -= 1;
+			}
+		}
+		
+		return correctedInputCode;
+	}
+	
 	void moveObjects() {
 		//cloning dynamic objects
 		/*
@@ -314,10 +429,8 @@ public class MovementComputation implements Runnable{
 							}
 						}
 					}
-				}
 
-				//Collision against Zombies
-				if(MainThread.isLocalClientServer()) {
+					//Collision against Zombies
 					for (GameObject zombie : copyOfDGO) {
 						if(zombie.getClass() == Zombie.class) {
 							if(CollisionDetection.scanForCollision(go, zombie)) {
@@ -331,7 +444,6 @@ public class MovementComputation implements Runnable{
 				
 				//Collision against Tiles
 				bulletDestroyed:{
-					
 					ArrayList<Tile> tiles = quadTree.getCollidingTiles(go);
 					if(tiles.size() == 0) {	//if bullet is out of bounds
 						MainThread.destroyBullet(go);
@@ -364,14 +476,55 @@ public class MovementComputation implements Runnable{
 			else{	//zombies
 				go.setOffset(offsetX, offsetY);
 				
-				float x = 0, y = 0;
+				if(MainThread.isLocalClientServer()) {
+					for (GameObject player : copyOfDGO) {
+						//if all players have been checked then stop this loop
+						if(player.getClass() != Player.class) break;	
+						//don't collide with dead players
+						else if(((Player)player).getCollider() != null){	//Collider can be null once player died
+							if(CollisionDetection.scanForCollision(go, player)) {
+								MainThread.broadcastKillPlayer(((Player)player).getPlayerNum());
+								
+								System.out.println(go + " killed: " + player);
+							}
+						}
+					}
+
+					String zombieInputCode = "";
+					for (GameObject zombie : copyOfDGO) {
+						//if all players have been checked then stop this loop
+						if(zombie.getClass() != Zombie.class) {
+							
+						}	
+						//don't collide with dead players
+						else {
+							//Generate Input Code for Zombie
+							//((Zombie)zombie).setInputCode(AIBehaviour.generateInputCode((Zombie)zombie));
+							
+							//zombieInputCode += ((Zombie)zombie).getID() + "-" + ((Zombie)zombie).getInputCode();
+							zombieInputCode += ((Zombie)zombie).getID() + "-" + adjustInputCode(zombie, AIBehaviour.generateInputCode((Zombie)zombie));
+							
+							//if zombie isn't last child of dynamic objects
+							if(zombie != copyOfDGO.get(copyOfDGO.size()-1)) {
+								zombieInputCode += ",";
+							}
+						}
+					}
+					
+					MainThread.sendZombieInputCode(zombieInputCode);
+				}
+				
+				applyInputCode((Zombie)go);
+				
+				
+				//float x = 0, y = 0;
 				
 				//random Object Jitter
 				//ToDo: add actual movement logic for stuff
 				//y = .005f;
 				
-				go.move(x, y);
-				setObjectAngle(go, x, y);
+				//go.move(x, y);
+				//setObjectAngle(go, x, y);
 			}
 		}
 		

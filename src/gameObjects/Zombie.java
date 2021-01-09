@@ -27,6 +27,8 @@ public class Zombie extends GameObject {
 	
 	Collider collider;
 	
+	int inputCode = 0;
+	
 	public Zombie(int id, float posX, float posY) {
 		this.id = id;
 		this.posX = posX;
@@ -117,5 +119,13 @@ public class Zombie extends GameObject {
 	
 	public int getID() {
 		return id;
+	}
+	
+	public int getInputCode() {
+		return inputCode;
+	}
+	
+	public void setInputCode(int inputCode) {
+		this.inputCode = inputCode;
 	}
 }

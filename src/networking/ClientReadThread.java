@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import graphics.MainThread;
 
@@ -110,7 +111,20 @@ public class ClientReadThread extends Thread {
  	                MainThread.spawnZombie(id, tileNum);
                 }
                 else if(commandCode == 4) {	//zombie movement
-                	
+                	String[] zombieCodes = response[1].split(",");
+
+                	ArrayList<Integer> zombieIds = new ArrayList<Integer>();
+	                int[] inputCodes = new int[zombieCodes.length];
+	                
+	                for (int i=0; i<zombieCodes.length; i++) {
+	                	String[] code = zombieCodes[i].split("-");
+	                	
+	                	zombieIds.add(Integer.valueOf(code[0]));
+	                	inputCodes[i] = Integer.valueOf(code[1]);
+	                }
+	                
+	                MainThread.setZombieInputCode(zombieIds, inputCodes);
+	                
                 }
                 else if(commandCode == 5) { //zombie death
                 	int zombieKillId = Integer.valueOf(response[1]);

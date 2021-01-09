@@ -562,4 +562,22 @@ public class MainThread {
 			dynamicGameObjects.remove(zombie);
 		}
 	}
+	
+	public static void sendZombieInputCode(String inputCode) {
+		serverInputHandler.broadcastInput("4:" + inputCode, null);
+	}
+	
+	public static void setZombieInputCode(ArrayList<Integer> IDs, int[] inputCodes) {
+		
+		for(int i=0; i<dynamicGameObjects.size(); i++) {
+			if(dynamicGameObjects.get(i).getClass() == Zombie.class) {
+				Zombie zombie = (Zombie)dynamicGameObjects.get(i); 
+				
+				int zombieId = zombie.getID();
+				int inputId = IDs.indexOf(zombieId);
+				
+				if(inputId != -1) zombie.setInputCode(inputCodes[inputId]);
+			}
+		}
+	}
 }
