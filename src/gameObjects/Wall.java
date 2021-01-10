@@ -7,7 +7,7 @@ import collision.RectangleCollider;
 
 public class Wall extends GameObject{
 	float width =.025f;
-	float height = .5f;
+	float height = .525f;
 	boolean vertical;
 
 	Collider collider;

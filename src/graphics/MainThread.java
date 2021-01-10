@@ -10,6 +10,7 @@ import java.util.Random;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
+import ai.LevelMapper;
 import collision.QuadTree;
 
 import controlls.MovementComputation;
@@ -193,7 +194,7 @@ public class MainThread {
 				
 				if (server) {	//if player is host
 					if(glfwGetKey(window, GLFW_KEY_SPACE) == GL_TRUE) {
-						startGame = true;
+						//startGame = true;
 						synchronized(START_GAME_TOKEN) {START_GAME_TOKEN.notify();}
 						
 						//ToDo: 
@@ -205,12 +206,12 @@ public class MainThread {
 					//font.drawString(100, 50, "Players connected: ", Color.white);
 					//font.drawString(100, 100, "Press SPACE to start game..", Color.gray);
 				}
-				else {
-					//font.drawString(100, 50, "Waiting for Host to start game... ", Color.white);
-					if(clientJavaSocket.getTotalPlayerNum() != 0) {	//value has been initialized, meaning that game has started
-						startGame = true;
-					}
+				//else {
+				//font.drawString(100, 50, "Waiting for Host to start game... ", Color.white);
+				if(clientJavaSocket.getTotalPlayerNum() != 0) {	//value has been initialized, meaning that game has started
+					startGame = true;
 				}
+				//}
 				
 				glfwSwapBuffers(window);
 			}
@@ -314,6 +315,9 @@ public class MainThread {
 		
 		///zombies\\
 		if(server) {
+			//Graph representation of level
+			LevelMapper.mapLevel(tiles, levelSize, levelSeed);
+			
 			eventThread = new EventThread();
 			
 			//Have three different Zombie spawners at the same time

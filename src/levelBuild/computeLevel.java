@@ -24,25 +24,29 @@ public class ComputeLevel {
 			    if(seedValue / 8 == 1)	{	//4th bit == 1 --> left
 			    	Wall wall = new Wall(x*.5f-tileSize/2, y*.5f, true);
 			    	Walls.add(wall);
-			    	tiles.get(y * mazeSize + x).addWall(wall);
+			    	//tiles.get(y * mazeSize + x).addWall(wall);
+			    	tile.addWall(wall);
 			    	seedValue -= 8;
 				}
 				if(seedValue / 4 == 1)	{	//3th bit == 1 --> bottom
 					Wall wall = new Wall(x*.5f, y*.5f-tileSize/2, false); 
 			    	Walls.add(wall);
-			    	tiles.get(y * mazeSize + x).addWall(wall);
+			    	//tiles.get(y * mazeSize + x).addWall(wall);
+			    	tile.addWall(wall);
 					seedValue -= 4;
 				}
 				if(seedValue / 2 == 1)	{	//2th bit == 1 --> right
 					Wall wall = new Wall(x*.5f+tileSize/2, y*.5f, true);
 			    	Walls.add(wall);
-			    	tiles.get(y * mazeSize + x).addWall(wall);
+			    	//tiles.get(y * mazeSize + x).addWall(wall);
+			    	tile.addWall(wall);
 					seedValue -= 2;
 				}
 				if(seedValue / 1 == 1)	{	//1th bit == 1 --> top
 					Wall wall = new Wall(x*.5f, y*.5f+tileSize/2, false); 
 			    	Walls.add(wall);
-			    	tiles.get(y * mazeSize + x).addWall(wall);
+			    	//tiles.get(y * mazeSize + x).addWall(wall);
+			    	tile.addWall(wall);
 					seedValue -= 1;
 				}
 			}

@@ -396,10 +396,10 @@ public class MovementComputation implements Runnable{
 		}
 		*/
 		ArrayList<GameObject> copyOfDGO = MainThread.getCopyOfDynamicObjects();
+		String zombieInputCode = "";
 		
 		for(int i=0; i<copyOfDGO.size(); i++){
 			GameObject go = copyOfDGO.get(i);
-			
 			
 			if(go==player) {	//local player
 				offsetX = player.getXPosition();
@@ -489,29 +489,25 @@ public class MovementComputation implements Runnable{
 							}
 						}
 					}
-
-					String zombieInputCode = "";
-					for (GameObject zombie : copyOfDGO) {
-						//if all players have been checked then stop this loop
-						if(zombie.getClass() != Zombie.class) {
-							
-						}	
-						//don't collide with dead players
-						else {
-							//Generate Input Code for Zombie
-							//((Zombie)zombie).setInputCode(AIBehaviour.generateInputCode((Zombie)zombie));
-							
-							//zombieInputCode += ((Zombie)zombie).getID() + "-" + ((Zombie)zombie).getInputCode();
-							zombieInputCode += ((Zombie)zombie).getID() + "-" + adjustInputCode(zombie, AIBehaviour.generateInputCode((Zombie)zombie));
-							
-							//if zombie isn't last child of dynamic objects
-							if(zombie != copyOfDGO.get(copyOfDGO.size()-1)) {
-								zombieInputCode += ",";
-							}
-						}
+					
+					//Generate Input Code for Zombie
+					//((Zombie)zombie).setInputCode(AIBehaviour.generateInputCode((Zombie)zombie));
+					ArrayList<Tile> collidingTiles = quadTree.getCollidingTiles(go);
+					ArrayList<Player> players = new ArrayList<Player>();
+					
+					for(GameObject player : copyOfDGO) {
+						if(player.getClass() == Player.class && !((Player)player).getDead()) players.add((Player)player);
+						else break;
 					}
 					
-					MainThread.sendZombieInputCode(zombieInputCode);
+					//zombieInputCode += ((Zombie)zombie).getID() + "-" + ((Zombie)zombie).getInputCode();
+					zombieInputCode += ((Zombie)go).getID() + "-" + adjustInputCode(go, ((Zombie)go).getAIBehaviour().generateInputCode(players, collidingTiles));
+					
+					//if zombie isn't last child of dynamic objects
+					if(go != copyOfDGO.get(copyOfDGO.size()-1)) {
+						zombieInputCode += ",";
+					}
+					
 				}
 				
 				applyInputCode((Zombie)go);
@@ -527,6 +523,9 @@ public class MovementComputation implements Runnable{
 				//setObjectAngle(go, x, y);
 			}
 		}
+		
+		//if zombies exist
+		if(!zombieInputCode.isBlank()) MainThread.sendZombieInputCode(zombieInputCode);
 		
 		for(GameObject go : staticGameObjects) {
 			go.setOffset(offsetX, offsetY);

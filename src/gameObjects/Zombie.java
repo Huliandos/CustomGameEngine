@@ -10,6 +10,7 @@ import static org.lwjgl.opengl.GL11.glRotatef;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import static org.lwjgl.opengl.GL11.glVertex2f;
 
+import ai.AIBehaviour;
 import collision.CircleCollider;
 import collision.Collider;
 
@@ -29,6 +30,8 @@ public class Zombie extends GameObject {
 	
 	int inputCode = 0;
 	
+	AIBehaviour aIBehaviour;
+	
 	public Zombie(int id, float posX, float posY) {
 		this.id = id;
 		this.posX = posX;
@@ -36,6 +39,8 @@ public class Zombie extends GameObject {
 		
 		float diagonalZombieSize = (float) Math.sqrt(Math.pow(zombieSize/2, 2) + Math.pow(zombieSize/2, 2));
 		collider = new CircleCollider(diagonalZombieSize);
+		
+		aIBehaviour = new AIBehaviour(this);
 	}
 
 	//The Player is always centered. His position gets added as offset to all other GameObjects
@@ -127,5 +132,13 @@ public class Zombie extends GameObject {
 	
 	public void setInputCode(int inputCode) {
 		this.inputCode = inputCode;
+	}
+	
+	public float getZombieSize() {
+		return zombieSize;
+	}
+	
+	public AIBehaviour getAIBehaviour() {
+		return aIBehaviour;
 	}
 }
