@@ -62,4 +62,12 @@ public class Tile extends GameObject {
 	public ArrayList<Tile> getNeighbors(){
 		return neighbors;
 	}
+	
+	public float getWidth() {
+		return width;
+	}
+	
+	public float getHeight() {
+		return height;
+	}
 }
