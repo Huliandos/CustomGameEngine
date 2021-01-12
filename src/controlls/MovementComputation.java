@@ -5,7 +5,6 @@ import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 import java.util.ArrayList;
 
-import ai.AIBehaviour;
 import collision.CollisionDetection;
 import collision.QuadTree;
 

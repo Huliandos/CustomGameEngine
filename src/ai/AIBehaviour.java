@@ -17,15 +17,10 @@ public class AIBehaviour {
 	float zombieRadius;
 	
 	ArrayList<Tile> wayToFollow = new ArrayList<Tile>();
-	ArrayList<Node> nodesToFollow = new ArrayList<Node>();
-	ArrayList<Node> tileNodes = new ArrayList<Node>();
-	//Idea: 
 	
 	public AIBehaviour(Zombie zombie){
 		this.zombie = zombie;
 		zombieRadius = zombie.getZombieSize()/2;
-		
-		tileNodes = new ArrayList<Node>();
 	}
 	
 	public int generateInputCode(ArrayList<Player> players, ArrayList<Tile> zombiePosTiles) {
@@ -36,6 +31,8 @@ public class AIBehaviour {
 		for(Player player : players) {
 			if(isInLineOfSight(zombie, player, zombiePosTiles.get(0), null)){
 				//reset way to follow
+				
+				//1System.out.println("Caught line of sight of player");
 				if(wayToFollow == null || !wayToFollow.isEmpty()) wayToFollow = new ArrayList<Tile>();
 				
 				float distanceToPlayer = distance(zombie, player);
@@ -48,18 +45,19 @@ public class AIBehaviour {
 		
 		//line of sight with player has been established
 		if(closestPlayer != null) {
-			return getInputCode(closestPlayer);
+			return getInputCode(closestPlayer, zombiePosTiles.get(0));
 		}
 		
 		
 		//if path to next player has been computed then follow it
 		//remove the first tile to follow of the zombie is already standing on it
-		if(wayToFollow != null && wayToFollow.size() > 0 && CollisionDetection.scanForCollision(zombie, wayToFollow.get(0))) {
+		//if(wayToFollow != null && wayToFollow.size() > 0 && CollisionDetection.scanForCollision(zombie, wayToFollow.get(0))) {	//old way
+		if(wayToFollow != null && wayToFollow.size() > 0 && CollisionDetection.scanForCollision(zombie, wayToFollow.get(0).getXPosition(), wayToFollow.get(0).getYPosition())) {
 			wayToFollow.remove(0);
 		}
 		
 		if(wayToFollow != null && wayToFollow.size() > 0) {
-			return getInputCode(wayToFollow.get(0));
+			return getInputCode(wayToFollow.get(0), zombiePosTiles.get(0));
 		}
 		//if path is empty then compute a new one
 		else {
@@ -81,7 +79,7 @@ public class AIBehaviour {
 				else return 0;						//stand still
 			}
 			
-			return getInputCode(wayToFollow.get(0));
+			return getInputCode(wayToFollow.get(0), zombiePosTiles.get(0));
 		}
 	}
 	
@@ -114,6 +112,19 @@ public class AIBehaviour {
 			}
 		}
 		
+		
+		//zombies can see through the corner of tiles, even if the neighbors walls are blocking it
+		//Thus you always have to check for collision for all neighbors walls before confirming line of sight
+		for (Tile neighbor : currentTile.getNeighbors()) {
+			//neighbor is in sight. Check collision for it
+			for (Wall wall : neighbor.getWalls()) {
+				if(CollisionDetection.inLineOfSight(zombie.getXPosition(), zombie.getYPosition(), player.getXPosition(), player.getYPosition(), wall)) {
+					 //wall is in the way of the players line of sight
+					 return false;
+				}
+			}
+		}
+		
 		//no collision detected and no unprocessed neighbors
 		return true;
 	}
@@ -122,10 +133,43 @@ public class AIBehaviour {
 		return (float) Math.sqrt(Math.pow(go1.getXPosition() - go2.getXPosition(), 2) + Math.pow(go1.getYPosition() - go2.getYPosition(), 2));
 	}
 	
-	int getInputCode(GameObject go) {
+	//Steering AI
+	int getInputCode(GameObject go, Tile zombiePosTile) {
+		//vector from zombie to player
 		float dirX = go.getXPosition() - zombie.getXPosition();
 		float dirY = go.getYPosition() - zombie.getYPosition();
 		int inputCode = 0;
+		
+		ArrayList<Wall> walls = new ArrayList<Wall>();
+		
+		//add this and neighbor tile walls
+		walls.addAll(zombiePosTile.getWalls());
+		for (Tile neighbor : zombiePosTile.getNeighbors()) {
+			walls.addAll(neighbor.getWalls());
+		}
+		
+		for (Wall wall : walls) {
+			//vector from wall to zombie, to push him away from it
+			if(CollisionDetection.isInTriggerRange(zombie, wall, .02f)) {
+				float vecX = zombie.getXPosition() - wall.getXPosition();
+				float vecY = zombie.getYPosition() - wall.getYPosition();
+				
+				//System.out.println("Is in Trigger Range w/ " + wall);
+				
+				float distanceToObject = 0;
+				
+				//check if x is closer than y or the other way around
+				if(vecX < vecY) {
+					distanceToObject = Math.abs(vecX - zombie.getXPosition());
+				}
+				else {
+					distanceToObject = Math.abs(vecY - zombie.getYPosition());
+				}
+				
+				dirX += vecX/distanceToObject;
+				dirY += vecY/distanceToObject;
+			}
+		}
 		
 		if(dirX>zombieRadius) {	//move right
 			inputCode += 1;

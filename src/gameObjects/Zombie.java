@@ -141,4 +141,8 @@ public class Zombie extends GameObject {
 	public AIBehaviour getAIBehaviour() {
 		return aIBehaviour;
 	}
+	
+	public float getRadius() {
+		return (float) Math.sqrt(Math.pow(zombieSize/2, 2) + Math.pow(zombieSize/2, 2));
+	}
 }
