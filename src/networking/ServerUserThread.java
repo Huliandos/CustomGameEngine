@@ -66,9 +66,6 @@ public class ServerUserThread implements Runnable {
 		
 		try {
 			while ((inputLine = in.readLine()) != null) {
-				//Possible ToDo:
-				//Read Input line here and check if action is legitimate, send user his real Input back (Securing that cheating isn't possible)
-				
 				serverInputHandler.broadcastInput(inputLine, this);
 			}
 		} catch (IOException e) {

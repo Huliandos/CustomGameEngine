@@ -42,8 +42,7 @@ public class Zombie extends GameObject {
 		
 		aIBehaviour = new AIBehaviour(this);
 	}
-
-	//The Player is always centered. His position gets added as offset to all other GameObjects
+	
 	@Override
 	public void drawGraphic() {
 		glPushMatrix();

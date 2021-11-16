@@ -12,7 +12,7 @@ public class Player extends GameObject{
 	
 	int numOfCirclePoints = 90;
 	
-	int playerNum;	//delete it this isn't used later
+	int playerNum;	
 	boolean localPlayer;
 	
 	int viewDirection = 0; //0 = top, 1 = top-right, 2 = right, 3 = bottom-right, 4 = bottom, 5 = bottom-left, 6 = left, 7 = top-left
@@ -66,7 +66,7 @@ public class Player extends GameObject{
 		collider = new CircleCollider(diagonalPlayerSize);
 	}
 
-	//The Player is always centered. His position gets added as offset to all other GameObjects
+	//The local Player is always centered. His position gets added as offset to all other GameObjects
 	@Override
 	public void drawGraphic() {
 		if(!localPlayer && dead) {
@@ -159,5 +159,9 @@ public class Player extends GameObject{
 	
 	public boolean getDead() {
 		return dead;
+	}
+	
+	public float getRadius() {
+		return (float) Math.sqrt(Math.pow(playerSize/2, 2) + Math.pow(playerSize/2, 2));
 	}
 }

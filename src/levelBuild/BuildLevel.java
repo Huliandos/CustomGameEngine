@@ -5,8 +5,6 @@ import java.util.Random;
 public class BuildLevel {
 
 	//Important(!): Level Order is left to right and bottom to top.
-	//Right now all existing walls are doubled. This could cause issues for steering AI.
-	//Resolve if it does
 	public static String generateLevel(int levelSize) {
 		Tile[] tiles = new Tile[levelSize*levelSize];
 		

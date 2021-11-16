@@ -199,9 +199,6 @@ public class QuadTree {
 			else {	//if it's 1 or 3 tiles over a maze divisible by 4
 				
 				//This moves the generated level size, so that the Quadtree separates
-				//int quotient = tiles.size() / 4;	//how often the number 4 fits into the Tile Size
-				//int lackingTiles = 4 - (tiles.size() - 4*quotient);	//how many tiles are missing for the tile num to be a multiple of 4
-				
 				int tooManyTiles = mazeSize % 4;	//how often the number 4 fits into the Tile Size
 				int lackingTiles = 4 - tooManyTiles;	//how many tiles are missing for the tile num to be a multiple of 4
 				

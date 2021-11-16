@@ -32,7 +32,7 @@ public class AIBehaviour {
 			if(isInLineOfSight(zombie, player, zombiePosTiles.get(0), null)){
 				//reset way to follow
 				
-				//1System.out.println("Caught line of sight of player");
+				//System.out.println("Caught line of sight of player");
 				if(wayToFollow == null || !wayToFollow.isEmpty()) wayToFollow = new ArrayList<Tile>();
 				
 				float distanceToPlayer = distance(zombie, player);
@@ -51,7 +51,6 @@ public class AIBehaviour {
 		
 		//if path to next player has been computed then follow it
 		//remove the first tile to follow of the zombie is already standing on it
-		//if(wayToFollow != null && wayToFollow.size() > 0 && CollisionDetection.scanForCollision(zombie, wayToFollow.get(0))) {	//old way
 		if(wayToFollow != null && wayToFollow.size() > 0 && CollisionDetection.scanForCollision(zombie, wayToFollow.get(0).getXPosition(), wayToFollow.get(0).getYPosition())) {
 			wayToFollow.remove(0);
 		}

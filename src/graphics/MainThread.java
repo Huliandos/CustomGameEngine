@@ -20,15 +20,12 @@ import gameObjects.Bullet;
 import gameObjects.GameObject;
 import gameObjects.Player;
 import gameObjects.Tile;
-import gameObjects.Wall;
 import gameObjects.Zombie;
 import levelBuild.ComputeLevel;
-import levelBuild.BuildLevel;
 
 import networking.ClientJavaSocket;
 import networking.ServerInputHandler;
 import networking.ServerJavaSocket;
-import networking.ServerUserThread;
 
 public class MainThread {
 	
@@ -235,34 +232,22 @@ public class MainThread {
 		
 		//init QuadTree
 		quadTree = new QuadTree(tiles, levelSize, tileSize, 0, levelSize*.5f - .5f, 0, levelSize*.5f - .5f);
-	
-		//init tile neighborhood for AI
-		
-		
-		///walls\\\
-		//String seed = BuildLevel.generateLevel(levelSize);
-		//System.out.print(seed);
-		//ArrayList<GameObject> walls = ComputeLevel.drawWalls(seed, levelSize, tileSize);
 		
 		//Generated walls
 		ArrayList<GameObject> walls = ComputeLevel.drawWalls(levelSeed, levelSize, tileSize, staticGameObjects);
 		
 		//Malin Custom
-		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("12,12,4,6,10,3,2,2,8,1,3,2,13,1,1,3", mazeSize, tileSize);
+		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("12,12,4,6,10,3,2,2,8,1,3,2,13,1,1,3", 4, tileSize);
 		
 		//Julian Custom
-		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("13,6,4,6,10,2,2,2,10,1,3,2,9,1,1,3", mazeSize, tileSize);
+		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("13,6,4,6,10,2,2,2,10,1,3,2,9,1,1,3", 4, tileSize);
 		
 		//Outer walls only
-		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("12,4,4,6,8,0,0,2,8,0,0,2,9,1,1,3", mazeSize, tileSize);
+		//ArrayList<GameObject> walls = ComputeLevel.drawWalls("12,4,4,6,8,0,0,2,8,0,0,2,9,1,1,3", 4, tileSize);
 		
 		for (GameObject wall : walls) {
 			staticGameObjects.add(wall);
 		}
-		
-		////power ups\\\\
-		
-		
 		
 		////dynamic objects\\\\
 
@@ -408,7 +393,6 @@ public class MainThread {
 		glfwTerminate();
 	}
 	
-	//doesn't work?
 	public static void shutdown() {
 		try {
 			serverJavaSocket.serverSocket.close();

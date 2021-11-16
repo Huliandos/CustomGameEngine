@@ -32,9 +32,6 @@ public class ServerInputHandler {
 	}
 	
 	public void removeUser(ServerUserThread user) {
-		//ToDo:
-		//Remove Socket when intentional or forced disconnect
-		//debug message to all other clients
 		users.remove(user);
 	}
 	

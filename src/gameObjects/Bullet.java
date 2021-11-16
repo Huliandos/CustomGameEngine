@@ -63,7 +63,6 @@ public class Bullet extends GameObject{
 		collider = new CircleCollider(diagonalBulletSize);
 	}
 
-	//The Player is always centered. His position gets added as offset to all other GameObjects
 	@Override
 	public void drawGraphic() {
 		glPushMatrix();

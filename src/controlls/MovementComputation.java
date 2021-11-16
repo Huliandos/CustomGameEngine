@@ -62,7 +62,6 @@ public class MovementComputation implements Runnable{
 					TOKEN.wait();	//syncs up position change with frame rate
 				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -188,8 +187,6 @@ public class MovementComputation implements Runnable{
 				//shoot
 				if(MainThread.getTime() > timeStampLastShot + shotCooldown) {	//shoot if shooting cd has passed
 					//System.out.println("pew");
-					//MainThread.spawnBullet(player.getXPosition(), player.getYPosition(), player.getPlayerNum(), x, y);
-					
 					Bullet bullet = new Bullet(player.getXPosition(), player.getYPosition(), player.getPlayerNum(), player.getViewDirection());
 					synchronized(dynamicGameObjects) {
 						dynamicGameObjects.add(bullet);
@@ -388,12 +385,6 @@ public class MovementComputation implements Runnable{
 	
 	void moveObjects() {
 		//cloning dynamic objects
-		/*
-		ArrayList<GameObject> copyOfDGO = new ArrayList<GameObject>();
-		synchronized (dynamicGameObjects){
-			for (GameObject go : dynamicGameObjects) copyOfDGO.add(go);
-		}
-		*/
 		ArrayList<GameObject> copyOfDGO = MainThread.getCopyOfDynamicObjects();
 		String zombieInputCode = "";
 		
@@ -454,14 +445,6 @@ public class MovementComputation implements Runnable{
 						//go through all walls of the tile
 						for (GameObject wall : ((Tile)tile).getWalls()) {
 							//if the player collides with a wall after applying movement
-							/*
-							if(CollisionDetection.scanForCollision(go, wall)) {
-								MainThread.destroyBullet(go);
-
-								//System.out.println(go + " destroyed");
-								break bulletDestroyed;
-							}
-							*/
 							if(CollisionDetection.scanForDynamicCollision(go, wall, ((Bullet)go).getMovementVectorX(), ((Bullet)go).getMovementVectorY())) {
 								MainThread.destroyBullet(go);
 
@@ -508,18 +491,8 @@ public class MovementComputation implements Runnable{
 					}
 					
 				}
-				
-				applyInputCode((Zombie)go);
-				
-				
-				//float x = 0, y = 0;
-				
-				//random Object Jitter
-				//ToDo: add actual movement logic for stuff
-				//y = .005f;
-				
-				//go.move(x, y);
-				//setObjectAngle(go, x, y);
+			
+			applyInputCode((Zombie)go);
 			}
 		}
 		

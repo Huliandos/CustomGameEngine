@@ -76,7 +76,7 @@ public class ClientReadThread extends Thread {
                 else if(commandCode == 1) {	//player position
                 	while(MainThread.getCopyOfDynamicObjects().size() == 0) {	//while players aren't initialized on local client
                 		try {
-							this.sleep(250);
+							this.sleep(250);	//players haven't been locally spawned. Wait until they are
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
